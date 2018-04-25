@@ -107,7 +107,7 @@ end_time = time.time()
 print("time:",end_time-start_time)
 ```
 
-#### Compare parameters and loss with scikit-learn
+#### Compare parameters and loss with scikit-learn's LogisticRegression
 
 ```python
 X = train[['bedrooms','bathrooms']].values
