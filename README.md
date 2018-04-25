@@ -49,6 +49,7 @@ model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)
 end_time = time.time()
 print("time:",end_time-start_time)
 ```
+#### Access Model Parameters and Loss
 
 ```python
 params = model.best_parameters
