@@ -86,6 +86,22 @@ end_time = time.time()
 print("time:",end_time-start_time)
 ```
 
+### Non Linear Coefficients - Sinusoids
+
+The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly different. A combination of the predicted values from these parameters ensembled together to improve results.
+
+```python
+def sin_least_sqs_loss(x,y,w):
+    hypothesis = w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
+    loss = hypothesis-y
+    return np.sum(loss**2)/len(y)
+```
+
+![](https://user-images.githubusercontent.com/21232362/39224841-34a459fc-4817-11e8-9786-be1c8e2ef595.png)
+![](https://user-images.githubusercontent.com/21232362/39224840-323fef32-4817-11e8-9af2-c417b5c78a19.png)
+
+
+
 ### Custom Loss Function - Loglikelihood
 
 ```python
