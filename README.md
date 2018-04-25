@@ -48,4 +48,22 @@ model = kernelml.kernel_optimizer(X,y,euclid_dist_to_centroid,num_param=2)
 model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)    
 end_time = time.time()
 print("time:",end_time-start_time)
+
+
+
+x = train[['long','lat','mean_long','mean_lat']].values
+y = train[["haversine"]].values 
+
+params = model.best_parameters
+error = model.best_losses
+params = np.array(params)
+
+SSE = np.min(error)
+SST = np.sum((y-np.mean(y))**2)
+
+w = params[np.where(error==np.min(error))].flatten()
+lon1, lat1, lon2, lat2 = x[:,0:1],x[:,1:2],x[:,2:3],x[:,3:4]
+plt.plot(np.sqrt((w[0]*lon1-w[0]*lon2)**2+(w[1]*lat1-w[1]*lat2)**2) ,y,'.')
+plt.show()
+
 ```
