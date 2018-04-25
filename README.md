@@ -81,7 +81,7 @@ y = train[["price"]].values
 model = kernelml.kernel_optimizer(X,y,poly_least_sqs_loss,num_param=4)
 model.add_intercept()
 model.adjust_uniform_random_low_high(0,2)
-model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)    
+model.kernel_optimize_()    
 end_time = time.time()
 print("time:",end_time-start_time)
 ```
@@ -118,7 +118,7 @@ model = kernelml.kernel_optimizer(X,y,liklihood_loss,num_param=3)
 model.add_intercept()
 model.adjust_random_simulation(random_sample_num=100)
 model.adjust_optimizer(n_parameter_updates=100,analyze_n_parameters=100)
-model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)
+model.kernel_optimize_()
 end_time = time.time()
 print("time:",end_time-start_time)
 ```
@@ -168,7 +168,7 @@ kernelml.adjust_uniform_random_low_high(self,low=-1,high=1)
 
 ```
 # Adjusts random simulation of parameters
-kernelml.adjust_random_simulation(self, init_random_sample_num=1000, random_sample_num=100)
+kernelml.adjust_random_simulation(self,init_random_sample_num=1000, random_sample_num=100)
 ```
 **init_random_sample_num:** the number of initial simulated parameters (+bias)
 
