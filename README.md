@@ -65,3 +65,24 @@ plt.plot(np.sqrt((w[0]*lon1-w[0]*lon2)**2+(w[1]*lat1-w[1]*lat2)**2) ,y,'.')
 plt.show()
 
 ```
+
+Search for the optimal power transformation - non linear coefficients
+
+![](https://user-images.githubusercontent.com/21232362/39224248-590e8a86-4814-11e8-8228-81b793378a29.png)
+
+```python
+def poly_least_sqs_loss(x,y,w):
+    hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
+    loss = hypothesis-y 
+    return np.sum(loss**2)/len(y)
+
+start_time = time.time()
+X = train[['sqft_living']].values
+y = train[["price"]].values
+model = kernelml.kernel_optimizer(X,y,poly_least_sqs_loss,num_param=4)
+model.add_intercept()
+model.adjust_uniform_random_low_high(0,2)
+model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)    
+end_time = time.time()
+print("time:",end_time-start_time)
+```
