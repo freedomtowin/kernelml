@@ -1,10 +1,12 @@
 # Kernel Machine Learning 
 
-### Installation
+## Installation
 
 ```
 pip install kernelml
 ```
+
+## Examples
 
 ### Kernel Mapping
 Find a projection for latitude and longitude so that the Haversian distance to the centroid of the data points is equal to that of the projected latitude and longitude in Euclidean space.
@@ -132,7 +134,7 @@ model = linear_model.LogisticRegression()
 model.fit(X, y)
 ```
 
-### Methods
+## Methods
 
 ```
 # Initializes the optimizer
