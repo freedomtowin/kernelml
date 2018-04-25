@@ -68,8 +68,6 @@ plt.show()
 
 Search for the optimal power transformation - non linear coefficients
 
-![](https://user-images.githubusercontent.com/21232362/39224248-590e8a86-4814-11e8-8228-81b793378a29.png)
-
 ```python
 def poly_least_sqs_loss(x,y,w):
     hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
@@ -85,4 +83,34 @@ model.adjust_uniform_random_low_high(0,2)
 model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)    
 end_time = time.time()
 print("time:",end_time-start_time)
+```
+
+Loglikelihood loss - custom loss function
+
+```python
+def liklihood_loss(x,y,w):
+    hypothesis = x.dot(w)
+    hypothesis = 1/(1+np.exp(-1*hypothesis))
+    hypothesis[hypothesis<=0.00001] = 0.00001
+    loss = -1*((1-y).T.dot(np.log(1-hypothesis)) + y.T.dot(np.log(hypothesis)))/len(y)
+    return loss.flatten()[0]
+
+X = train[['bedrooms','bathrooms']].values
+start_time = time.time()
+model = kernelml.kernel_optimizer(X,y,liklihood_loss,num_param=3)
+model.add_intercept()
+model.adjust_random_simulation(random_sample_num=100)
+model.adjust_optimizer(n_parameter_updates=100,analyze_n_parameters=100)
+model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)
+end_time = time.time()
+print("time:",end_time-start_time)
+```
+
+Compare parameters and loss with scikit-learn
+
+```python
+X = train[['bedrooms','bathrooms']].values
+y = (train['sqft_living'] > np.mean(train['sqft_living'])).reshape(len(train),1)
+model = linear_model.LogisticRegression()
+model.fit(X, y)
 ```
