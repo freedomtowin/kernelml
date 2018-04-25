@@ -6,7 +6,7 @@
 pip install kernelml
 ```
 
-### Examples
+### Kernel Mapping
 Find a projection for latitude and longitude so that the Haversian distance to the centroid of the data points is equal to that of the projected latitude and longitude in Euclidean space.
 
 ![](https://user-images.githubusercontent.com/21232362/39224068-37ba94c0-4813-11e8-9414-6d489fe86b4d.png)
@@ -66,7 +66,7 @@ plt.show()
 
 ```
 
-Search for the optimal power transformation - non linear coefficients
+### Non Linear Coefficients - Power Transformation
 
 ```python
 def poly_least_sqs_loss(x,y,w):
@@ -85,7 +85,7 @@ end_time = time.time()
 print("time:",end_time-start_time)
 ```
 
-Loglikelihood loss - custom loss function
+### Custom Loss Function - Loglikelihood
 
 ```python
 def liklihood_loss(x,y,w):
@@ -106,7 +106,7 @@ end_time = time.time()
 print("time:",end_time-start_time)
 ```
 
-Compare parameters and loss with scikit-learn
+#### Compare parameters and loss with scikit-learn
 
 ```python
 X = train[['bedrooms','bathrooms']].values
