@@ -12,21 +12,21 @@ pip install kernelml
 # Initializes the optimizer
 kernelml.kernel_optimizer(X,y,loss_function,num_param)
 ```
-X: input matrix
+*X:* input matrix
 
-y: output vector
+*y:* output vector
 
-loss_function: f(x,y,w), outputs loss
+*loss_function:* f(x,y,w), outputs loss
 
-num_param: number of parameters in the loss function
+*num_param:* number of parameters in the loss function
 
 ```
 # Begins the optimization process
 kernelml.kernel_optimize_(plot=False,print_feedback=True)
 ```
-plot: provides real-time plots of parameters and losses
+*plot:* provides real-time plots of parameters and losses
 
-print_feedback: real-time feedback of parameters,losses, and convergence
+*print_feedback:* real-time feedback of parameters,losses, and convergence
 
 
 ```
