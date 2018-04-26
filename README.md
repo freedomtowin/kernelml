@@ -51,7 +51,7 @@ model.kernel_optimize_(optimizer=kernelml.pid_linear_combination)
 end_time = time.time()
 print("time:",end_time-start_time)
 ```
-#### Access Model Parameters and Losses
+##### Access Model Parameters and Losses
 
 ```python
 params = model.best_parameters
@@ -90,7 +90,7 @@ print("time:",end_time-start_time)
 
 ### Non Linear Coefficients - Sinusoids
 
-The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly different. A combination of the predicted values from these parameters ensembled together to improve results.
+The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly differently. Using a combination of the predicted values from these parameters, ensembled together, can improve results.
 
 ```python
 def sin_least_sqs_loss(x,y,w):
