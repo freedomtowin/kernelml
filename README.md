@@ -1,14 +1,23 @@
 # Kernel Machine Learning 
 
-## Installation
+## Table of contents
+1. [Introduction](#installation)
+2. [Examples](#examples)
+    1. [Kernel Mapping](#kernelmapping)
+    2. [Find Optimal Power Transformation](#powertransformation)
+    3. [Find Sinusoidal Parameters](#sinusoids)
+    4. [Custom Log Likelihood Loss](#loglikelihood)
+3. [Methods](#methods)
+
+## Installation <a name="installation"></a>
 
 ```
 pip install kernelml
 ```
 
-## Examples
+## Examples <a name="examples"></a>
 
-### Kernel Mapping
+### Kernel Mapping <a name="kernelmapping"></a>
 Find a projection for latitude and longitude so that the Haversian distance to the centroid of the data points is equal to that of the projected latitude and longitude in Euclidean space.
 
 ![](https://user-images.githubusercontent.com/21232362/39224068-37ba94c0-4813-11e8-9414-6d489fe86b4d.png)
@@ -69,7 +78,7 @@ plt.show()
 
 ```
 
-### Non Linear Coefficients - Power Transformation
+### Non Linear Coefficients - Power Transformation <a name="powertransformation"></a>
 
 ```python
 def poly_least_sqs_loss(x,y,w):
@@ -88,7 +97,7 @@ end_time = time.time()
 print("time:",end_time-start_time)
 ```
 
-### Non Linear Coefficients - Sinusoids
+### Non Linear Coefficients - Sinusoids <a name="sinusoids"></a>
 
 The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly differently. Using a combination of the predicted values from these parameters, ensembled together, can improve results.
 
@@ -104,7 +113,7 @@ def sin_least_sqs_loss(x,y,w):
 
 
 
-### Custom Loss Function - Loglikelihood
+### Custom Loss Function - Loglikelihood <a name="loglikelihood"></a>
 
 ```python
 def liklihood_loss(x,y,w):
@@ -134,7 +143,7 @@ model = linear_model.LogisticRegression()
 model.fit(X, y)
 ```
 
-## Methods
+## Methods <a name="methods"></a>
 
 ```
 # Initializes the optimizer
