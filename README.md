@@ -149,28 +149,24 @@ model.fit(X, y)
 # Initializes the optimizer
 kernelml.kernel_optimizer(X,y,loss_function,num_param)
 ```
-**X:** input matrix
-
-**y:** output vector
-
-**loss_function:** f(x,y,w), outputs loss
-
-**num_param:** number of parameters in the loss function
+* **X:** input matrix
+* **y:** output vector
+* **loss_function:** f(x,y,w), outputs loss
+* **num_param:** number of parameters in the loss function
 
 ```
 # Begins the optimization process
 kernelml.kernel_optimize_(plot=False,print_feedback=True)
 ```
-**plot:** provides real-time plots of parameters and losses
-
-**print_feedback:** real-time feedback of parameters,losses, and convergence
+* **plot:** provides real-time plots of parameters and losses
+* **print_feedback:** real-time feedback of parameters,losses, and convergence
 
 
 ```
 # Adjusts the maximum number of iterations
 kernelml.adjust_maximum_iterations(self,total_iterations=100) 
 ```
-**total_iterations:** number of iterations (+bias)
+* **total_iterations:** number of iterations (+bias)
 
 ```
 # Adjusts the initial parameter sampling (this can be useful to avoid underflows or overflows)
@@ -181,17 +177,14 @@ kernelml.adjust_uniform_random_low_high(self,low=-1,high=1)
 # Adjusts random simulation of parameters
 kernelml.adjust_random_simulation(self,init_random_sample_num=1000, random_sample_num=100)
 ```
-**init_random_sample_num:** the number of initial simulated parameters (+bias)
-
-**random_sample_num:** the number of intermediate simulated parameters (+bias)
+* **init_random_sample_num:** the number of initial simulated parameters (+bias)
+* **random_sample_num:** the number of intermediate simulated parameters (+bias)
    
 
 ```
 # Adjusts how the optimizer analyzes and updates the parameters
 kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
 ```
-**analyze_n_parameters:** the number of parameters analyzed (+variance)
-
-**n_parameter_updates:** the number of parameter updates per iteration (+bias)
-
-**update_magnitude:** the magnitude of the updates (+variance)
+* **analyze_n_parameters:** the number of parameters analyzed (+variance)
+* **n_parameter_updates:** the number of parameter updates per iteration (+bias)
+* **update_magnitude:** the magnitude of the updates (+variance)
