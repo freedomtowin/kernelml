@@ -1,7 +1,7 @@
 # Kernel Machine Learning 
 
 ## Table of contents
-1. [Introduction](#installation)
+1. [Installation](#installation)
 2. [Examples](#examples)
     1. [Kernel Mapping](#kernelmapping)
     2. [Find Optimal Power Transformation](#powertransformation)
