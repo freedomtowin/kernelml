@@ -112,7 +112,7 @@ def sin_least_sqs_loss(x,y,w):
 ![](https://user-images.githubusercontent.com/21232362/39224841-34a459fc-4817-11e8-9786-be1c8e2ef595.png)
 ![](https://user-images.githubusercontent.com/21232362/39224840-323fef32-4817-11e8-9af2-c417b5c78a19.png)
 
-
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6VJ4KeqJiB4/0.jpg)](https://www.youtube.com/watch?v=6VJ4KeqJiB4)
 
 ### Custom Loss Function - Loglikelihood <a name="loglikelihood"></a>
 
