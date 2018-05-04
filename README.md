@@ -9,6 +9,7 @@
     3. [Find Sinusoidal Parameters](#sinusoids)
     4. [Custom Log Likelihood Loss](#loglikelihood)
 3. [Methods](#methods)
+4. [Default Function](#defaults)
 
 ## Installation <a name="installation"></a>
 
@@ -189,3 +190,34 @@ kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates (+variance)
+
+### Default Functions <a name="defaults"></a>
+
+These functions are the defaults for how kernelml samples the paramater space. The function can be overrided to user defined functions.
+
+```
+    #inital parameter sampler
+    def prior_sampler_uniform_distribution(self,num_param):
+        return np.random.uniform(low=self.low,high=self.high,size=(num_param,self.init_random_sample_num))
+
+    #multivariate normal sampler
+    def sampler_multivariate_normal_distribution(self,best_param,
+                                                param_by_iter,
+                                                error_by_iter,
+                                                weight_history,
+                                                random_sample_num=100):
+        covariance = np.diag(np.var(weight_history[:,:],axis=1))
+        best = param_by_iter[np.where(error_by_iter==np.min(error_by_iter))[0]]
+        mean = best.flatten()
+        try:
+            return np.random.multivariate_normal(mean, covariance, (random_sample_num)).T
+        except:
+            print(best,np.where(error_by_iter==np.min(error_by_iter)))
+            
+    #override functions
+    def change_random_sampler(self,fcn):
+        self.sampler = fcn
+        
+    def change_prior_sampler(self,fcn):
+        self.prior_sampler = fcn
+```            
