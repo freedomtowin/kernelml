@@ -9,7 +9,7 @@
     3. [Find Sinusoidal Parameters](#sinusoids)
     4. [Custom Log Likelihood Loss](#loglikelihood)
 3. [Methods](#methods)
-4. [Default Function](#defaults)
+4. [Random Sampling Functions](#defaults)
 
 ## Installation <a name="installation"></a>
 
@@ -193,7 +193,7 @@ kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates (+variance)
 
-### Default Functions <a name="defaults"></a>
+### Random Sampling Functions <a name="defaults"></a>
 
 These functions are the defaults for how kernelml samples the paramater space. The function can be overrided to user defined functions.
 
