@@ -195,7 +195,7 @@ kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100
 
 These functions are the defaults for how kernelml samples the paramater space. The function can be overrided to user defined functions.
 
-```
+```python
     #inital parameter sampler
     def prior_sampler_uniform_distribution(self,num_param):
         return np.random.uniform(low=self.low,high=self.high,size=(num_param,self.init_random_sample_num))
