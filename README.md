@@ -4,6 +4,7 @@
 1. [Installation](#installation)
 2. [Examples](#examples)
     1. [Kernel Mapping](#kernelmapping)
+    2. [Access Model Parameters/Losses](#accessmodel)
     2. [Find Optimal Power Transformation](#powertransformation)
     3. [Find Sinusoidal Parameters](#sinusoids)
     4. [Custom Log Likelihood Loss](#loglikelihood)
@@ -60,7 +61,7 @@ model.kernel_optimize_()
 end_time = time.time()
 print("time:",end_time-start_time)
 ```
-##### Access Model Parameters and Losses
+### Access Model Parameters and Losses <a name="accessmodel"></a>
 
 ```python
 params = model.best_parameters
