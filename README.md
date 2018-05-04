@@ -77,7 +77,6 @@ w = params[np.where(error==np.min(error))].flatten()
 lon1, lat1, lon2, lat2 = X[:,0:1],X[:,1:2],X[:,2:3],X[:,3:4]
 plt.plot(np.sqrt((w[0]*lon1-w[0]*lon2)**2+(w[1]*lat1-w[1]*lat2)**2) ,y,'.')
 plt.show()
-
 ```
 
 ### Non Linear Coefficients - Power Transformation <a name="powertransformation"></a>
@@ -144,6 +143,9 @@ y = (train['sqft_living'] > np.mean(train['sqft_living'])).reshape(len(train),1)
 model = linear_model.LogisticRegression()
 model.fit(X, y)
 ```
+### Clustering
+
+
 
 ## Methods <a name="methods"></a>
 
