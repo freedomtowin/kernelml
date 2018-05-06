@@ -95,7 +95,7 @@ X = train[['sqft_living']].values
 y = train[["price"]].values
 model = kernelml.kernel_optimizer(X,y,poly_least_sqs_loss,num_param=4)
 model.add_intercept()
-model.adjust_uniform_random_low_high(0,2)
+model.prior_uniform_random_simulation_params(0,2)
 model.kernel_optimize_()    
 end_time = time.time()
 print("time:",end_time-start_time)
@@ -137,7 +137,7 @@ X = train[['bedrooms','bathrooms']].values
 start_time = time.time()
 model = kernelml.kernel_optimizer(X,y,liklihood_loss,num_param=3)
 model.add_intercept()
-model.adjust_random_simulation(random_sample_num=100)
+model.default_random_simulation_params(random_sample_num=100)
 model.adjust_optimizer(n_parameter_updates=100,analyze_n_parameters=100)
 model.kernel_optimize_()
 end_time = time.time()
@@ -180,12 +180,12 @@ kernelml.adjust_maximum_iterations(self,total_iterations=100)
 
 ```
 # Adjusts the initial parameter sampling (this can be useful to avoid underflows or overflows)
-kernelml.adjust_uniform_random_low_high(self,low=-1,high=1)
+kernelml.prior_uniform_random_simulation_params(self,low=-1,high=1)
 ```
 
 ```
 # Adjusts random simulation of parameters
-kernelml.adjust_random_simulation(self,init_random_sample_num=1000, random_sample_num=100)
+kernelml.default_random_simulation_params(self,init_random_sample_num=1000, random_sample_num=100)
 ```
 * **init_random_sample_num:** the number of initial simulated parameters (+bias)
 * **random_sample_num:** the number of intermediate simulated parameters (+bias)
