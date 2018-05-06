@@ -155,7 +155,7 @@ model.fit(X, y)
 
 ## Methods <a name="methods"></a>
 
-```
+```python
 # Initializes the optimizer
 kernelml.kernel_optimizer(X,y,loss_function,num_param)
 ```
@@ -164,7 +164,7 @@ kernelml.kernel_optimizer(X,y,loss_function,num_param)
 * **loss_function:** f(x,y,w), outputs loss
 * **num_param:** number of parameters in the loss function
 
-```
+```python
 # Begins the optimization process
 kernelml.kernel_optimize_(plot=False,print_feedback=True)
 ```
@@ -172,18 +172,22 @@ kernelml.kernel_optimize_(plot=False,print_feedback=True)
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
 
-```
+```python
 # Adjusts the maximum number of iterations
 kernelml.adjust_maximum_iterations(self,total_iterations=100) 
 ```
 * **total_iterations:** number of iterations (+bias)
 
-```
+### Adjust Random Sampling Parameters
+
+Note: these values are not used with the random sampling functions are overrided.
+
+```python
 # Adjusts the initial parameter sampling (this can be useful to avoid underflows or overflows)
 kernelml.prior_uniform_random_simulation_params(self,low=-1,high=1)
 ```
 
-```
+```python
 # Adjusts random simulation of parameters
 kernelml.default_random_simulation_params(self,init_random_sample_num=1000, random_sample_num=100)
 ```
@@ -199,16 +203,16 @@ kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates (+variance)
 
-### Random Sampling Functions <a name="defaults"></a>
+### Override Random Sampling Functions <a name="defaults"></a>
 
 These functions are the defaults for how kernelml samples the paramater space. The function can be overrided to user defined functions.
 
 ```python
-    #inital parameter sampler
+    #inital parameter sampler (default)
     def prior_sampler_uniform_distribution(self,num_param):
         return np.random.uniform(low=self.low,high=self.high,size=(num_param,self.init_random_sample_num))
 
-    #multivariate normal sampler
+    #multivariate normal sampler (default)
     def sampler_multivariate_normal_distribution(self,best_param,
                                                 param_by_iter,
                                                 error_by_iter,
@@ -221,7 +225,9 @@ These functions are the defaults for how kernelml samples the paramater space. T
             return np.random.multivariate_normal(mean, covariance, (random_sample_num)).T
         except:
             print(best,np.where(error_by_iter==np.min(error_by_iter)))
-            
+```
+
+```python
     #override functions
     def change_random_sampler(self,fcn):
         self.sampler = fcn
