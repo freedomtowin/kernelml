@@ -119,7 +119,7 @@ The predicted output from each parameter was used as a feature in a unifying mod
 
 ##### Youtube video - parameters and loss updates
 
-This is a short video of how the parameters and loss updated by iteration for the loss function above.
+This short video shows how the parameters updated for the loss function above.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6VJ4KeqJiB4/0.jpg)](https://www.youtube.com/watch?v=6VJ4KeqJiB4)
 
