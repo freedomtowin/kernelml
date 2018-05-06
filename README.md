@@ -195,7 +195,7 @@ kernelml.default_random_simulation_params(self,init_random_sample_num=1000, rand
 * **random_sample_num:** the number of intermediate simulated parameters (+bias)
    
 
-```
+```python
 # Adjusts how the optimizer analyzes and updates the parameters
 kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
 ```
