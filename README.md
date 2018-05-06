@@ -20,7 +20,8 @@ pip install kernelml
 ## Examples <a name="examples"></a>
 
 ### Kernel Mapping <a name="kernelmapping"></a>
-Find a projection for latitude and longitude so that the Haversian distance to the centroid of the data points is equal to that of the projected latitude and longitude in Euclidean space.
+
+Lets take the problem of clustering longitude and latitude coordinates. Clustering methods such as K-means use Euclidean distances to compare observations. However, The Euclidean distances between the longitude and latitude data points do not map directly to Haversine distance. That means if you normalize the coordinate between 0 and 1, the distance won't be accurately represented in the clustering model. A possible solution is to find a projection for latitude and longitude so that the Haversian distance to the centroid of the data points is equal to that of the projected latitude and longitude in Euclidean space.
 
 ![](https://user-images.githubusercontent.com/21232362/39224068-37ba94c0-4813-11e8-9414-6d489fe86b4d.png)
 
@@ -81,6 +82,8 @@ plt.show()
 
 ### Non Linear Coefficients - Power Transformation <a name="powertransformation"></a>
 
+Another, simpler problem is to find the optimal values of non-linear coefficients, i.e, power transformations in a least squares linear model. The reason for doing this is simple: integer power transformations rarely capture the best fitting transformation. By allowing the power transformation to be any real number, the accuracy will improve and the model will generalize to the validation data better.  
+
 ```python
 def poly_least_sqs_loss(x,y,w):
     hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
@@ -100,7 +103,7 @@ print("time:",end_time-start_time)
 
 ### Non Linear Coefficients - Sinusoids <a name="sinusoids"></a>
 
-The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly differently. Using a combination of the predicted values from these parameters, ensembled together, can improve results.
+The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly differently. Using a combination of the predicted values from these parameters, ensembled together, can improve results. In this example, the phase, time shift, and the scaling for the cosine term will update in that order.
 
 ```python
 def sin_least_sqs_loss(x,y,w):
@@ -109,10 +112,15 @@ def sin_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y)
 ```
 
+The predicted output from each parameter was used as a feature in a unifying model. The train and validation plots below show how using multiple parameter sets can fit complex shapes.
+
 ![](https://user-images.githubusercontent.com/21232362/39224841-34a459fc-4817-11e8-9786-be1c8e2ef595.png)
 ![](https://user-images.githubusercontent.com/21232362/39224840-323fef32-4817-11e8-9af2-c417b5c78a19.png)
 
 ##### Youtube video - parameters and loss updates
+
+This is a short video of how the parameters and loss updated by iteration for the loss function above.
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6VJ4KeqJiB4/0.jpg)](https://www.youtube.com/watch?v=6VJ4KeqJiB4)
 
 ### Custom Loss Function - Loglikelihood <a name="loglikelihood"></a>
@@ -144,9 +152,6 @@ y = (train['sqft_living'] > np.mean(train['sqft_living'])).reshape(len(train),1)
 model = linear_model.LogisticRegression()
 model.fit(X, y)
 ```
-### Clustering
-
-
 
 ## Methods <a name="methods"></a>
 
