@@ -9,7 +9,8 @@
     3. [Fit Sinusoidal Parameters](#sinusoids)
     4. [Custom Log Likelihood Loss](#loglikelihood)
 3. [Methods](#methods)
-4. [Random Sampling Functions](#defaults)
+    1. [Adjust Default Random Sampling Parameters](#adjustrandom)
+    2. [Override Random Sampling Functions](#simulationdefaults)
 
 ## Installation <a name="installation"></a>
 
@@ -178,7 +179,7 @@ kernelml.adjust_maximum_iterations(self,total_iterations=100)
 ```
 * **total_iterations:** number of iterations (+bias)
 
-### Adjust Random Sampling Parameters
+### Adjust Random Sampling Parameters <a name="adjustrandom"></a>
 
 Note: these values are not used with the random sampling functions are overrided.
 
@@ -203,7 +204,7 @@ kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates (+variance)
 
-### Override Random Sampling Functions <a name="defaults"></a>
+### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
 These functions are the defaults for how kernelml samples the paramater space. The function can be overrided to user defined functions.
 
