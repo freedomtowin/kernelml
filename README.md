@@ -6,7 +6,7 @@
     1. [Kernel Mapping](#kernelmapping)
     2. [Access Model Parameters/Losses](#accessmodel)
     2. [Fit Optimal Power Transformation](#powertransformation)
-    3. [Fit Sinusoidal Parameters](#sinusoids)
+    3. [Fit Sinusoidal Parameters - Ensemble Model](#sinusoids)
     4. [Custom Log Likelihood Loss](#loglikelihood)
 3. [Methods](#methods)
     1. [Adjust Default Random Sampling Parameters](#adjustrandom)
@@ -102,7 +102,7 @@ end_time = time.time()
 print("time:",end_time-start_time)
 ```
 
-### Non Linear Coefficients - Sinusoids <a name="sinusoids"></a>
+### Non Linear Coefficients - Ensemble Model - Sinusoids <a name="sinusoids"></a>
 
 The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly differently. Using a combination of the predicted values from these parameters, ensembled together, can improve results. In this example, the phase, time shift, and the scaling for the cosine term will update in that order.
 
@@ -118,7 +118,7 @@ The predicted output from each parameter was used as a feature in a unifying mod
 ![](https://user-images.githubusercontent.com/21232362/39224841-34a459fc-4817-11e8-9786-be1c8e2ef595.png)
 ![](https://user-images.githubusercontent.com/21232362/39224840-323fef32-4817-11e8-9af2-c417b5c78a19.png)
 
-The video below shows how the parameters were adjusted for the example above. Please see the example code in kernelml-time-series-example.py.
+The video below shows how the parameters were adjusted for the example above.  Please see the example code in kernelml-time-series-example.py.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6VJ4KeqJiB4/0.jpg)](https://www.youtube.com/watch?v=6VJ4KeqJiB4)
 
@@ -183,6 +183,7 @@ Note: the values in the following functions will be ignored when the random samp
 
 ```python
 # Adjusts the initial parameter sampling (this can be useful to avoid underflows or overflows)
+# Not to be confused with kernelml.prior_uniform_random_simulation_distribution which is the actual sampling method
 kernelml.prior_uniform_random_simulation_params(self,low=-1,high=1)
 ```
 
