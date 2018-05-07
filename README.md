@@ -226,11 +226,11 @@ The default random sampling functions for the prior and posterior distributions 
 
 ```python
     #inital parameter sampler (default)
-    def prior_sampler_uniform_distribution(self,num_param):
+    def prior_sampler_uniform_distribution(num_param):
         return np.random.uniform(low=self.low,high=self.high,size=(num_param,self.init_random_sample_num))
 
     #multivariate normal sampler (default)
-    def sampler_multivariate_normal_distribution(self,best_param,
+    def sampler_multivariate_normal_distribution(best_param,
                                                 param_by_iter,
                                                 error_by_iter,
                                                 parameter_update_history,
