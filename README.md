@@ -155,7 +155,7 @@ model.fit(X, y)
 
 ### Enhanced Ridge Regression <a name="ridge"></a>
 
-Add a parameter for L2 regularization and allow the alpha parameter to fluxuate from a target value. The added flexibility can improve generalization to the validation data. Please see kernelml-enhanced-ridge.py.
+Add a parameter for L2 regularization and allow the alpha parameter to fluxuate from a target value. The added flexibility can improve generalization to the validation data. Please see kernelml-enhanced-ridge-example.py.
 
 ```python
 def ridge_least_sqs_loss(x,y,w):
