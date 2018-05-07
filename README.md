@@ -179,7 +179,7 @@ kernelml.adjust_maximum_iterations(self,total_iterations=100)
 
 ### Adjust Random Sampling Parameters <a name="adjustrandom"></a>
 
-Note: these values are not used with the random sampling functions are overrided.
+Note: the values in the following functions will be ignored when the random sampling functions are overrided.
 
 ```python
 # Adjusts the initial parameter sampling (this can be useful to avoid underflows or overflows)
@@ -215,9 +215,9 @@ These functions are the defaults for how kernelml samples the paramater space. T
     def sampler_multivariate_normal_distribution(self,best_param,
                                                 param_by_iter,
                                                 error_by_iter,
-                                                weight_history,
+                                                parameter_update_history,
                                                 random_sample_num=100):
-        covariance = np.diag(np.var(weight_history[:,:],axis=1))
+        covariance = np.diag(np.var(parameter_update_history[:,:],axis=1))
         best = param_by_iter[np.where(error_by_iter==np.min(error_by_iter))[0]]
         mean = best.flatten()
         try:
