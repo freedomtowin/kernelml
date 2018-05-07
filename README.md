@@ -8,6 +8,7 @@
     2. [Fit Optimal Power Transformation](#powertransformation)
     3. [Fit Sinusoidal Parameters - Ensemble Model](#sinusoids)
     4. [Custom Log Likelihood Loss](#loglikelihood)
+    5. [Enhanced Ridge Regression](#ridge)
 3. [Methods](#methods)
     1. [Adjust Default Random Sampling Parameters](#adjustrandom)
     2. [Override Random Sampling Functions](#simulationdefaults)
@@ -150,6 +151,22 @@ X = train[['bedrooms','bathrooms']].values
 y = (train['sqft_living'] > np.mean(train['sqft_living'])).reshape(len(train),1)
 model = linear_model.LogisticRegression()
 model.fit(X, y)
+```
+
+### Enhanced Ridge Regression <a name="ridge"></a>
+
+Add a parameter for L2 regularization and allow the alpha parameter to fluxuate from a target value. The added flexibility can improve generalization to the validation data. Please see kernelml-enhanced-ridge.py.
+
+```python
+def ridge_least_sqs_loss(x,y,w):
+    alpha,w = w[-1][0],w[:-1]
+    penalty = 0
+    value = 1
+    if alpha<=value:
+        penalty = 10*abs(value-alpha)
+    hypothesis = x.dot(w)
+    loss = hypothesis-y 
+    return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
 ```
 
 ## Methods <a name="methods"></a>
