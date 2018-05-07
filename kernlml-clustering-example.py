@@ -79,7 +79,7 @@ def sampler_custom(self,best_param,
 
 
 
-def dist_loss(x,y,w):
+def loss_function(x,y,w):
 
         u11,u21 = w[0],w[2]
         s11,s21 = w[1],w[3]
@@ -105,10 +105,10 @@ def dist_loss(x,y,w):
 
 start_time = time.time()
 y = vals/np.max(vals)
-model = kernelml.kernel_optimizer(X,y,dist_loss,num_param=12)
+model = kernelml.kernel_optimizer(X,y,loss_function,num_param=12)
 #change the random sampler
 model.change_random_sampler(sampler_custom)
-model.adjust_uniform_random_low_high(0.1,2.5)
+model.prior_uniform_random_simulation_params(0.1,2.5)
 model.kernel_optimize_(plot=True)    
 end_time = time.time()
 print("time:",end_time-start_time)
