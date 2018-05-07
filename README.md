@@ -204,7 +204,7 @@ kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
-These functions are the defaults for how kernelml samples the paramater space. The function can be overrided to user defined functions.
+The default random sampling functions for the prior and posterior distributions can be overrided. User defined random sampling function must have the same parameters as the default. Please see the default random sampling functions below. 
 
 ```python
     #inital parameter sampler (default)
