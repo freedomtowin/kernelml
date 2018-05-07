@@ -57,7 +57,7 @@ print(vals,X)
 def sampler_custom(self,best_param,
                                 param_by_iter,
                                 error_by_iter,
-                                weight_history,
+                                parameter_update_history,
                                 random_sample_num=100):
     
     best = param_by_iter[np.where(error_by_iter==np.min(error_by_iter))[0]]
