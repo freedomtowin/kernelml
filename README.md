@@ -118,9 +118,7 @@ The predicted output from each parameter was used as a feature in a unifying mod
 ![](https://user-images.githubusercontent.com/21232362/39224841-34a459fc-4817-11e8-9786-be1c8e2ef595.png)
 ![](https://user-images.githubusercontent.com/21232362/39224840-323fef32-4817-11e8-9af2-c417b5c78a19.png)
 
-**Youtube video - parameter updates and and losses by iteration**
-
-This short video shows how the parameters were updated for the loss function above.
+The video below shows how the parameters were adjusted for the example above. Please see the example code in kernelml-time-series-example.py.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6VJ4KeqJiB4/0.jpg)](https://www.youtube.com/watch?v=6VJ4KeqJiB4)
 
