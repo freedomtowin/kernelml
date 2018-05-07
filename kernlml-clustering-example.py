@@ -54,7 +54,7 @@ print(vals,X)
 
 
 #multivariate normal sampler
-def sampler_custom(self,best_param,
+def sampler_custom(best_param,
                                 param_by_iter,
                                 error_by_iter,
                                 parameter_update_history,
