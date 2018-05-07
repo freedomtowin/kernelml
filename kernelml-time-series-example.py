@@ -8,6 +8,7 @@ from sklearn import linear_model
 train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
+
 full = pd.concat([train[['price','date']],test[['price','date']]])
 full.sort_values(by='date',inplace=True)
 full=full.groupby('date').count()
@@ -16,26 +17,29 @@ plt.plot(full[['price']].values)
 plt.title("average housing prices by date - full data")
 plt.show()
 
-ts = full[:int(len(full)*0.7)].copy()
-ts['i'] = np.arange(0,len(ts))
+ts_train = full[:int(len(full)*0.7)].copy()
+ts_train['i'] = np.arange(0,len(ts_train))
 plt.plot(ts[['price']].values)
 plt.title("average housing prices by date - train data")
 plt.show()
 
 ts_test = full[int(len(full)*0.7):].copy()
-ts_test['i'] = np.arange(len(ts),len(ts)+len(ts_test))
+ts_test['i'] = np.arange(len(ts_train),len(ts_train)+len(ts_test))
 plt.plot(ts_test[['price']].values)
 plt.title("average housing prices by date - valid data")
 plt.show()
 
+def sin_non_linear_model(x,w):
+    return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
+
 def sin_least_sqs_loss(x,y,w):
-    hypothesis = w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
+    hypothesis = sin_non_linear_model(x,w)
     loss = hypothesis-y
     return np.sum(loss**2)/len(y)
 
 
-X = ts[['i']].values
-y = ts[["price"]].values
+X = ts_train[['i']].values
+y = ts_train[["price"]].values
 model = kernelml.kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
 model.add_intercept()
 #inital random sample with default sampler
@@ -45,3 +49,52 @@ model.default_random_simulation_params(random_sample_num=1000)
 #optimizer parameters
 model.adjust_optimizer(analyze_n_parameters=10)
 model.kernel_optimize_(plot=True)   
+
+### Ensemble Model
+
+#Create train and test datasets
+X_train = ts_train[['i']].values
+y_train = ts_train[["price"]].values
+X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
+
+X_test = ts_test[['i']].values
+y_test = ts_test[['price']].values
+X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
+
+#Get the model parameters by iteration
+params = model.best_parameters
+error = model.best_losses
+params = np.array(params)
+
+#SST for train and test
+SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
+SST_test = np.sum((y_test-np.mean(y_test))**2)/len(y_test)
+
+#Create ensemble of features
+predicted_output_as_feature_train = np.zeros((X_train.shape[0],3))
+predicted_output_as_feature_test = np.zeros((X_test.shape[0],3))
+
+#Features from last three parameter updates
+i=0
+for w in params[-3:,:]:
+    predicted_output_as_feature_train[:,i] = sin_non_linear_model(X_train,w).flatten()
+    predicted_output_as_feature_test[:,i] = sin_non_linear_model(X_test,w).flatten()
+    i+=1
+
+ 
+linreg = linear_model.LinearRegression()
+linreg.fit(predicted_output_as_feature_train,y_train)
+print('train score:',linreg.score(predicted_output_as_feature_train,y_train))
+
+plt.plot(linreg.predict(predicted_output_as_feature_train))
+plt.plot(y_train)
+plt.title("average housing prices by date - train data")
+plt.show()
+
+plt.plot(linreg.predict(predicted_output_as_feature_test))
+plt.plot(y_test)
+plt.title("average housing prices by date - valid data")
+plt.show()
+
+SSE = np.sum((y_test-linreg.predict(predicted_output_as_feature_test))**2)/len(y_test)
+print('validation rsquared:',1-SSE/SST_test)
