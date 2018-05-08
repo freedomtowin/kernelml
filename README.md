@@ -13,6 +13,7 @@ Project Status: Alpha
     5. [Enhanced Ridge Regression](#ridge)
 3. [Methods](#methods)
     1. [Adjust Default Random Sampling Parameters](#adjustrandom)
+    1. [Adjust Optimizer Parameters](#adjustopt)
     2. [Override Random Sampling Functions](#simulationdefaults)
 
 ## Installation <a name="installation"></a>
@@ -208,6 +209,7 @@ kernelml.default_random_simulation_params(self,init_random_sample_num=1000, rand
 * **init_random_sample_num:** the number of initial simulated parameters (+bias)
 * **random_sample_num:** the number of intermediate simulated parameters (+bias)
    
+### Adjust Optimizer Parameters  <a name="adjustopt"></a>
 
 ```python
 # Adjusts how the optimizer analyzes and updates the parameters
