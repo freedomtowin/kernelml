@@ -1,5 +1,7 @@
 # Kernel Machine Learning 
 
+Project Status: Alpha
+
 ## Table of contents
 1. [Installation](#installation)
 2. [Examples](#examples)
