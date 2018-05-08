@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import scipy.stats as stats
 from sklearn import linear_model
 import time
@@ -14,12 +15,13 @@ def generate_MoG_data(num_data, means, covariances, weights):
         x = np.random.multivariate_normal(means[k], covariances[k])
         data.append(x)
     return data
-    
+
 init_means = [
     [5, 0], # mean of cluster 1
     [1, 1], # mean of cluster 2
     [0, 5]  # mean of cluster 3
 ]
+
 init_covariances = [
     [[.5, 0.], [0, .5]], # covariance of cluster 1
     [[.92, .38], [.38, .91]], # covariance of cluster 2
@@ -31,10 +33,13 @@ init_weights = [1/4., 1/2., 1/4.]  # weights of each cluster
 np.random.seed(4)
 data = generate_MoG_data(1000, init_means, init_covariances, init_weights)
 d = np.vstack(data)
+plt.plot(d[:,0], d[:,1],'ko')
+plt.rcParams.update({'font.size':16})
+plt.tight_layout()
+
 vals, indxs = np.histogramdd(d, normed=False,bins=20)
 i=0
 for indx in reversed(indxs):
-
     x = np.linspace(np.min(d[:,i]),np.max(d[:,i]),len(vals)) + np.diff(indx)
     if i==0:
         X = pd.DataFrame(x)
@@ -50,7 +55,7 @@ vals = vals.flatten()
 X = X.values
 X = X[np.where(vals>0)]
 vals = vals[np.where(vals>0)]
-print(vals,X)
+
 
 
 #multivariate normal sampler
@@ -62,17 +67,16 @@ def sampler_custom(best_param,
     
     best = param_by_iter[np.where(error_by_iter==np.min(error_by_iter))[0]]
     mean = best.flatten()
-    r = []
+    pvarience = np.var(parameter_update_history[:,:],axis=1)
+    r = [0]*12
     try:
-        #w1 w3 (means)
-        r[0] = np.random.normal(mean[0], 1, (random_sample_num)).T
-        r[2] = np.random.normal(mean[2], 1, (random_sample_num)).T
-        r[4] = np.random.normal(mean[4], 1, (random_sample_num)).T
+        for i in range(12):
+            r[i] = np.random.normal(mean[i], pvarience[i], (random_sample_num)).T
         
-        #w2 w4 (stds)
-        r[1] = np.random.uniform(0.1,mean[1]+1, (random_sample_num)).T
-        r[3] = np.random.uniform(0.1,mean[3]+1, (random_sample_num)).T
-        r[5] = np.random.uniform(0.1,mean[5]+1, (random_sample_num)).T
+        for i in [1,3,5,7,9,11]:
+            val = r[i]
+            val[np.where(val<=0)] = 0.1
+            r[i] = val
         return np.array(r)
     except:
         print(best,np.where(error_by_iter==np.min(error_by_iter)))
@@ -109,6 +113,7 @@ model = kernelml.kernel_optimizer(X,y,loss_function,num_param=12)
 #change the random sampler
 model.change_random_sampler(sampler_custom)
 model.prior_uniform_random_simulation_params(0.1,2.5)
+model.adjust_convergence_z_score(2.0)
 model.kernel_optimize_(plot=True)    
 end_time = time.time()
 print("time:",end_time-start_time)
