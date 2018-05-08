@@ -30,7 +30,7 @@ init_weights = [1/4., 1/2., 1/4.]  # weights of each cluster
 # Generate data
 np.random.seed(4)
 data = generate_MoG_data(1000, init_means, init_covariances, init_weights)
-
+d = np.vstack(data)
 vals, indxs = np.histogramdd(d, normed=False,bins=20)
 i=0
 for indx in reversed(indxs):
