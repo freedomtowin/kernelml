@@ -112,11 +112,15 @@ y = vals/np.max(vals)
 model = kernelml.kernel_optimizer(X,y,loss_function,num_param=12)
 #change the random sampler
 model.change_random_sampler(sampler_custom)
+#change the prior uniform distribution
 model.prior_uniform_random_simulation_params(0.1,2.5)
+#try to make the algorithm converge faster
+model.adjust_optimizer(update_magnitude=200,total_iterations=20)
 model.adjust_convergence_z_score(2.0)
 model.kernel_optimize_(plot=True)    
 end_time = time.time()
 print("time:",end_time-start_time)
+
 
 def generate_pdfs(x,y,w):
         u11,u21 = w[0],w[2]
@@ -139,7 +143,7 @@ params = np.array(params)
 w = params[np.where(error==np.min(error))].flatten()
 
 df = pd.DataFrame(X)
-df[['dist1','dist2','dist3','dist4','dist5','dist6']]=pd.DataFrame(np.squeeze(np.array(generate_pdf1(X,y,w)))).T
+df[['dist1','dist2','dist3','dist4','dist5','dist6']]=pd.DataFrame(np.squeeze(np.array(generate_pdfs(X,y,w)))).T
 df['y'] = vals/np.max(vals)
 
 #normalize the values
@@ -159,6 +163,6 @@ df = df.merge(G,on=['c0','c1'])
 plt.figure(figsize=(10,10))
 plt.scatter([x[0] for x in d], [y[1] for y in d])
 for i in df['index'].unique():
-    clust = T[[0,1,'index']][T['index']==i]
+    clust = df[[0,1,'index']][df['index']==i]
     plt.scatter([x[0] for x in clust[[0]].values], [y[0] for y in clust[[1]].values])
 plt.show()
