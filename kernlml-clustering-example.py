@@ -114,8 +114,14 @@ model = kernelml.kernel_optimizer(X,y,loss_function,num_param=12)
 model.change_random_sampler(sampler_custom)
 #change the prior uniform distribution
 model.prior_uniform_random_simulation_params(0.1,2.5)
-#try to make the algorithm converge faster
-model.adjust_optimizer(update_magnitude=200,total_iterations=20)
+model.default_random_simulation_params(init_random_sample_num=100)
+#try to make the algorithm converge faster 
+#smaller updates will have a tendancy to stick (default is 100)
+#low the number of parameter update and rely more on the simulation
+#analyze more parameters to add variance to the updates
+model.adjust_optimizer(update_magnitude=20,
+                       n_parameter_updates=15,
+                       analyze_n_parameters=50)
 model.adjust_convergence_z_score(2.0)
 model.kernel_optimize_(plot=True)    
 end_time = time.time()
