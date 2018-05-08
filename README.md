@@ -190,11 +190,6 @@ kernelml.kernel_optimize_(plot=False,print_feedback=True)
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
 
-```python
-# Adjusts the maximum number of iterations
-kernelml.adjust_maximum_iterations(self,total_iterations=100) 
-```
-* **total_iterations:** number of iterations (+bias)
 
 ### Adjust Random Sampling Parameters <a name="adjustrandom"></a>
 
@@ -216,8 +211,9 @@ kernelml.default_random_simulation_params(self,init_random_sample_num=1000, rand
 
 ```python
 # Adjusts how the optimizer analyzes and updates the parameters
-kernelml.adjust_optimizer(self, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
+kernelml.adjust_optimizer(self,total_iterations=100, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
 ```
+* **total_iterations:** number of iterations (+bias)
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates (+variance)
