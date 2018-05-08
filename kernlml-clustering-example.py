@@ -120,7 +120,7 @@ model.default_random_simulation_params(init_random_sample_num=100)
 #low the number of parameter update and rely more on the simulation
 #analyze more parameters to add variance to the updates
 model.adjust_optimizer(update_magnitude=20,
-                       n_parameter_updates=15,
+                       n_parameter_updates=5,
                        analyze_n_parameters=50)
 model.adjust_convergence_z_score(2.0)
 model.kernel_optimize_(plot=True)    
