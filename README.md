@@ -12,9 +12,10 @@ Project Status: Beta
     4. [Custom Log Likelihood Loss](#loglikelihood)
     5. [Enhanced Ridge Regression](#ridge)
 3. [Methods](#methods)
-    1. [Adjust Default Random Sampling Parameters](#adjustrandom)
-    1. [Adjust Optimizer Parameters](#adjustopt)
-    2. [Override Random Sampling Functions](#simulationdefaults)
+    1. [Convergence](#convergence)
+    2. [Adjust Default Random Sampling Parameters](#adjustrandom)
+    3. [Adjust Optimizer Parameters](#adjustopt)
+    4. [Override Random Sampling Functions](#simulationdefaults)
 
 ## Installation <a name="installation"></a>
 
@@ -190,7 +191,7 @@ kernelml.kernel_optimize_(plot=False,print_feedback=True)
 * **plot:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
-### Convergence
+### Convergence <a name="convergence"></a>
 
 The model saves the best parameter and user-defined loss after each iteration. The model also record a history of all parameter updates. The question is how to use this data to define convergence. One possible solution is:
 
@@ -205,7 +206,7 @@ if np.all(np.abs(convergence)<1):
 The formula creates a Z-score using the last 10 parameters and the best parameter. If the Z-score for all the parameters is less than 1, then the algorithm can be said to have converged. This convergence solution works well when there is a theoretical best parameter set.
 
 ```python
-kernelml.adjust_convergence_z_score(z)
+kernelml.adjust_convergence_z_score(z=1)
 ```
 * **z:** the z score -  defines when the algorithm converges
 
