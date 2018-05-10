@@ -191,6 +191,11 @@ kernelml.kernel_optimize_(plot=False,print_feedback=True)
 * **plot:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
+```python
+# Appends an array of ones to the left hand side of the numpy input matrix
+model.add_intercept()
+```
+
 ### Convergence <a name="convergence"></a>
 
 The model saves the best parameter and user-defined loss after each iteration. The model also record a history of all parameter updates. The question is how to use this data to define convergence. One possible solution is:
