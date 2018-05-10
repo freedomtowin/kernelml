@@ -6,96 +6,62 @@ from matplotlib import pyplot as plt
 from sklearn import linear_model
 import kernelml
 
-train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
-test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
+train=pd.read_csv("DATA/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
+test=pd.read_csv("DATA/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
-
-full = pd.concat([train[['price','date']],test[['price','date']]])
-full.sort_values(by='date',inplace=True)
-full=full.groupby('date').count()
-
-plt.plot(full[['price']].values)
-plt.title("average housing prices by date - full data")
-plt.show()
-
-ts_train = full[:int(len(full)*0.7)].copy()
-ts_train['i'] = np.arange(0,len(ts_train))
-plt.plot(ts[['price']].values)
-plt.title("average housing prices by date - train data")
-plt.show()
-
-ts_test = full[int(len(full)*0.7):].copy()
-ts_test['i'] = np.arange(len(ts_train),len(ts_train)+len(ts_test))
-plt.plot(ts_test[['price']].values)
-plt.title("average housing prices by date - valid data")
-plt.show()
-
-def sin_non_linear_model(x,w):
-    return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
-
-def sin_least_sqs_loss(x,y,w):
-    hypothesis = sin_non_linear_model(x,w)
-    loss = hypothesis-y
+def poly_function(x,w):
+    hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
+    return hypothesis
+    
+def poly_least_sqs_loss(x,y,w):
+    hypothesis = poly_function(x,w)
+    loss = hypothesis-y 
     return np.sum(loss**2)/len(y)
 
-
-X = ts_train[['i']].values
-y = ts_train[["price"]].values
-model = kernelml.kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
+start_time = time.time()
+X_train = train[['sqft_living']].values
+y_train = train[["price"]].values
+model = kernelml.kernel_optimizer(X_train,y_train,poly_least_sqs_loss,num_param=4)
 model.add_intercept()
-#inital random sample with default sampler
-model.prior_uniform_random_simulation_params(low=-1,high=1)
-#monte carlo simulation parameters
-model.default_random_simulation_params(random_sample_num=1000)
-#optimizer parameters
-model.adjust_optimizer(analyze_n_parameters=10)
-model.kernel_optimize_(plot=True)   
+model.prior_uniform_random_simulation_params(0,2)
+model.kernel_optimize_()    
+end_time = time.time()
+print("time:",end_time-start_time)
 
-### Ensemble Model
+#Get the model parameters by iteration
+params = model.best_parameters
+errors = model.best_losses
+params = np.array(params)
+y_train = train[["price"]].values
+SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
+1-min(errors)/SST_train
 
 #Create train and test datasets
-X_train = ts_train[['i']].values
-y_train = ts_train[["price"]].values
-X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
+X_train = train[['sqft_living']].values
+y_train = train[["price"]].values
+X_test = test[['sqft_living']].values
+y_test = test[["price"]].values
 
-X_test = ts_test[['i']].values
-y_test = ts_test[['price']].values
+#Add the intercept
+X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 #Get the model parameters by iteration
 params = model.best_parameters
-error = model.best_losses
+errors = model.best_losses
 params = np.array(params)
 
 #SST for train and test
 SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
 SST_test = np.sum((y_test-np.mean(y_test))**2)/len(y_test)
 
-#Create ensemble of features
-predicted_output_as_feature_train = np.zeros((X_train.shape[0],3))
-predicted_output_as_feature_test = np.zeros((X_test.shape[0],3))
+#Create predict outputs
+best_w = params[np.where(errors == np.min(errors))].flatten()
+train_predicted_output = poly_function(X_train,best_w)
+test_predicted_output = poly_function(X_test,best_w)
 
-#Features from last three parameter updates
-i=0
-for w in params[-3:,:]:
-    predicted_output_as_feature_train[:,i] = sin_non_linear_model(X_train,w).flatten()
-    predicted_output_as_feature_test[:,i] = sin_non_linear_model(X_test,w).flatten()
-    i+=1
+SSE_train = np.sum((y_train-train_predicted_output)**2)/len(y_train)
+SSE_test = np.sum((y_test-test_predicted_output)**2)/len(y_test)
 
- 
-linreg = linear_model.LinearRegression()
-linreg.fit(predicted_output_as_feature_train,y_train)
-print('train score:',linreg.score(predicted_output_as_feature_train,y_train))
-
-plt.plot(linreg.predict(predicted_output_as_feature_train))
-plt.plot(y_train)
-plt.title("average housing prices by date - train data")
-plt.show()
-
-plt.plot(linreg.predict(predicted_output_as_feature_test))
-plt.plot(y_test)
-plt.title("average housing prices by date - valid data")
-plt.show()
-
-SSE = np.sum((y_test-linreg.predict(predicted_output_as_feature_test))**2)/len(y_test)
-print('validation rsquared:',1-SSE/SST_test)
+print('train rsquared:',1-SSE_train/SST_train)
+print('validation rsquared:',1-SSE_test/SST_test)
