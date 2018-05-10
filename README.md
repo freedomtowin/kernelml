@@ -190,7 +190,24 @@ kernelml.kernel_optimize_(plot=False,print_feedback=True)
 * **plot:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
+### Convergence
 
+The model saves the best parameter and user-defined loss after each iteration. The model also record a history of all parameter updates. The question is how to use this data to define convergence. One possible solution is:
+
+```python
+#Convergence algorithm
+convergence = (best_parameter-np.mean(param_by_iter[-10:,:],axis=0))/(np.std(param_by_iter[-10:,:],axis=0))
+
+if np.all(np.abs(convergence)<1):
+    print('converged')
+    break
+ ```
+The formula creates a Z-score using the last 10 parameters and the best parameter. If the Z-score for all the parameters is less than 1, then the algorithm can be said to have converged. This convergence solution works well when there is a theoretical best parameter set.
+
+```python
+kernelml.adjust_convergence_z_score(z)
+```
+* **z:** the z score -  defines when the algorithm converges
 
 ### Adjust Random Sampling Parameters <a name="adjustrandom"></a>
 
