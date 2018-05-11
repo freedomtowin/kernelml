@@ -43,8 +43,6 @@ X = ts_train[['i']].values
 y = ts_train[["price"]].values
 model = kernelml.kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
 model.add_intercept()
-#inital random sample with default sampler
-model.prior_uniform_random_simulation_params(low=-1,high=1)
 #monte carlo simulation parameters
 model.default_random_simulation_params(random_sample_num=1000)
 #optimizer parameters
