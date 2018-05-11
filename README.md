@@ -101,7 +101,7 @@ X = train[['sqft_living']].values
 y = train[["price"]].values
 model = kernelml.kernel_optimizer(X,y,poly_least_sqs_loss,num_param=4)
 model.add_intercept()
-model.prior_uniform_random_simulation_params(0,2)
+model.default_random_simulation_params(prior_uniform_low=0,prior_uniform_high=2)
 model.kernel_optimize_()    
 end_time = time.time()
 print("time:",end_time-start_time)
@@ -198,17 +198,14 @@ kernelml.adjust_convergence_z_score(z=1)
 Note: the values in the following functions will be ignored when the random sampling functions are overrided.
 
 ```python
-# Adjusts the initial parameter sampling (this can be useful to avoid underflows or overflows)
-# Not to be confused with kernelml.prior_uniform_random_simulation_distribution which is the actual sampling method
-kernelml.prior_uniform_random_simulation_params(self,low=-1,high=1)
-```
-
-```python
 # Adjusts random simulation of parameters
-kernelml.default_random_simulation_params(self,init_random_sample_num=1000, random_sample_num=100)
+kernelml.default_random_simulation_params(self,init_random_sample_num=1000,
+                                            random_sample_num=100,prior_uniform_low=-1,prior_uniform_high=1)
 ```
 * **init_random_sample_num:** the number of initial simulated parameters (+bias)
 * **random_sample_num:** the number of intermediate simulated parameters (+bias)
+* **prior_uniform_low:** default pior random sampler - uniform distribution - low
+* **prior_uniform_high:** default pior random sampler - uniform distribution - high
    
 ### Adjust Optimizer Parameters  <a name="adjustopt"></a>
 
