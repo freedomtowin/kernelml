@@ -20,7 +20,7 @@ plt.show()
 
 ts_train = full[:int(len(full)*0.7)].copy()
 ts_train['i'] = np.arange(0,len(ts_train))
-plt.plot(ts[['price']].values)
+plt.plot(ts_train[['price']].values)
 plt.title("average housing prices by date - train data")
 plt.show()
 
@@ -80,7 +80,6 @@ for w in params[-3:,:]:
     predicted_output_as_feature_test[:,i] = sin_non_linear_model(X_test,w).flatten()
     i+=1
 
- 
 linreg = linear_model.LinearRegression()
 linreg.fit(predicted_output_as_feature_train,y_train)
 print('train score:',linreg.score(predicted_output_as_feature_train,y_train))
