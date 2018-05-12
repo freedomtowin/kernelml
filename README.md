@@ -144,7 +144,7 @@ model.add_intercept()
 params = model.get_best_parameters()
 errors = model.get_best_losses()
 update_history = model.get_parameter_update_history()
-best_w = params[np.where(error==np.min(error))].flatten()
+best_w = params[np.where(errors==np.min(errors))].flatten()
 ```
 
 ### Convergence <a name="convergence"></a>
