@@ -9,7 +9,7 @@ Project Status: Beta
     2. [Access Model Parameters/Losses](#accessmodel)
     2. [Fit Optimal Power Transformation](#powertransformation)
     3. [Fit Sinusoidal Parameters - Ensemble Model](#sinusoids)
-    4. [Custom Log Likelihood Loss](#loglikelihood)
+    4. [Negative Log Likelihood Loss](#loglikelihood)
     5. [Enhanced Ridge Regression](#ridge)
 3. [Methods](#methods)
     1. [Convergence](#convergence)
@@ -96,7 +96,7 @@ The video below shows how the parameters were adjusted for the example above.  P
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6VJ4KeqJiB4/0.jpg)](https://www.youtube.com/watch?v=6VJ4KeqJiB4)
 
-### Custom Loss Function - Loglikelihood <a name="loglikelihood"></a>
+### Negative Loglikelihood Loss <a name="loglikelihood"></a>
 
 Kernelml can minimize non-linear loss functions such as minimizing the negative loglikelihood for logistic regression. In addition, the optimizer fit a distribution to an empirical histogram using negative loglikelihood as the loss function. Please see kernelml-likelihood-distribution-fitting.py. 
 
