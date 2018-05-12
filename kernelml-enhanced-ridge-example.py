@@ -20,7 +20,7 @@ SST_train = np.sum((y_train-np.mean(y_train))**2)
 SST_test = np.sum((y_test-np.mean(y_test))**2)
 
 start_time = time.time()
-model = kernelml.kernel_optimizer(X_train,y_train,ridge_least_sqs_loss,num_param=5)
+model = kernel_optimizer(X_train,y_train,ridge_least_sqs_loss,num_param=5)
 model.add_intercept()
 
 model.default_random_simulation_params(prior_uniform_low=1,prior_uniform_high=2)
@@ -52,5 +52,5 @@ X_test = test[['sqft_living','bedrooms','bathrooms']].values
 y_test = test[['price']].values
 model = linear_model.Ridge(alpha=1)
 model.fit(X_train,y_train)
-model.score(X_test,y_test),model.intercept_,model.coef_
-print(1-SSE_test/SST_test)
+print('kernelml validation r-squared:',1-SSE_test/SST_test)
+print('scikit-learn validation r-squared:',model.score(X_test,y_test))
