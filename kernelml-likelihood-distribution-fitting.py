@@ -45,7 +45,7 @@ model.kernel_optimize_(plot=True)
 params = model.get_best_parameters()
 errors = model.get_best_losses()
 update_history = model.get_parameter_update_history()
-w = params[np.where(errors==np.min(errors))].flatten()
+w = params[np.where(errors==np.min(errors))].T
 
 mean1,std1,scale1 = w[0],w[1],w[2]
 
