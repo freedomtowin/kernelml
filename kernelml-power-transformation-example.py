@@ -51,7 +51,7 @@ SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
 SST_test = np.sum((y_test-np.mean(y_test))**2)/len(y_test)
 
 #Create predict outputs
-best_w = params[np.where(errors == np.min(errors))].T
+best_w = params[np.where(errors == np.min(errors))].flatten()
 train_predicted_output = poly_function(X_train,best_w).flatten()
 test_predicted_output = poly_function(X_test,best_w).flatten()
 
