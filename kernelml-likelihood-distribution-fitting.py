@@ -1,3 +1,9 @@
+import pandas as pd
+import time
+import seaborn
+import numpy as np
+from matplotlib import pyplot as plt
+from sklearn import linear_model
 import kernelml
 from scipy import stats
 
@@ -36,9 +42,9 @@ model.adjust_optimizer(update_magnitude=10,analyze_n_parameters=50)
 model.adjust_convergence_z_score(1.9)
 model.kernel_optimize_(plot=True)   
 
-errors = model.best_losses
-params = model.best_parameters
-params = np.array(params)
+params = model.get_best_parameters()
+errors = model.get_best_losses()
+update_history = model.get_parameter_update_history()
 w = params[np.where(errors==np.min(errors))].T
 
 mean1,std1,scale1 = w[0],w[1],w[2]
