@@ -42,16 +42,16 @@ X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 #Get the model parameters by iteration
-params = model.best_parameters
-errors = model.best_losses
-params = np.array(params)
+params = model.get_best_parameters()
+errors = model.get_best_losses()
+update_history = model.get_parameter_update_history()
 
 #SST for train and test
 SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
 SST_test = np.sum((y_test-np.mean(y_test))**2)/len(y_test)
 
 #Create predict outputs
-best_w = params[np.where(errors == np.min(errors))[0]]
+best_w = params[np.where(errors == np.min(errors))].T
 train_predicted_output = poly_function(X_train,best_w).flatten()
 test_predicted_output = poly_function(X_test,best_w).flatten()
 
