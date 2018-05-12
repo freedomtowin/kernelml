@@ -29,10 +29,10 @@ end_time = time.time()
 print("time:",end_time-start_time)
 
 #Get model performance on validation data
-errors = model.best_losses
-params = model.best_parameters
-params = np.array(params)
-w = params[np.where(errors==np.min(errors))].T
+params = model.get_best_parameters()
+errors = model.get_best_losses()
+update_history = model.get_parameter_update_history()
+best_w = params[np.where(errors==np.min(errors))].T
 alpha,w = w[-1][0],w[:-1]
 print('alpha:',alpha)
 print('w:',w)
