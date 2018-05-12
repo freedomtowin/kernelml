@@ -30,6 +30,7 @@ model.kernel_optimize_(plot=True)
 end_time = time.time()
 print("time:",end_time-start_time)
 
+
 #Create train and test datasets
 X_train = train[['sqft_living']].values
 y_train = train[["price"]].values
@@ -51,12 +52,12 @@ SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
 SST_test = np.sum((y_test-np.mean(y_test))**2)/len(y_test)
 
 #Create predict outputs
-best_w = params[np.where(errors == np.min(errors))].flatten()
-train_predicted_output = poly_function(X_train,best_w).flatten()
-test_predicted_output = poly_function(X_test,best_w).flatten()
+best_w = params[np.where(errors == np.min(errors))].T
+train_predicted_output = poly_function(X_train,best_w)
+test_predicted_output = poly_function(X_test,best_w)
 
-SSE_train = np.sum((y_train-train_predicted_output**2))/len(y_test)
-SSE_test = np.sum((y_test-test_predicted_output**2))/len(y_test)
+SSE_train = np.sum((y_train-train_predicted_output)**2)/len(y_train)
+SSE_test = np.sum((y_test-test_predicted_output)**2)/len(y_test)
 
 print('train rsquared:',1-SSE_train/SST_train)
 print('validation rsquared:',1-SSE_test/SST_train)
