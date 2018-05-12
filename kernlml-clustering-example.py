@@ -119,7 +119,7 @@ model.default_random_simulation_params(init_random_sample_num=100,prior_uniform_
 #low the number of parameter update and rely more on the simulation
 #analyze more parameters to add variance to the updates
 model.adjust_optimizer(update_magnitude=20,
-                       n_parameter_updates=5,
+                       n_parameter_updates=10,
                        analyze_n_parameters=50)
 model.adjust_convergence_z_score(2.0)
 model.kernel_optimize_(plot=True)    
@@ -144,7 +144,7 @@ def generate_pdfs(x,y,w):
 
 params = model.get_best_parameters()
 errors = model.get_best_losses()
-w = params[np.where(error==np.min(error))].flatten()
+w = params[np.where(errors==np.min(errors))].flatten()
 
 df = pd.DataFrame(X)
 df[['dist1','dist2','dist3','dist4','dist5','dist6']]=pd.DataFrame(np.squeeze(np.array(generate_pdfs(X,y,w)))).T
