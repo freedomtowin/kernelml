@@ -61,9 +61,8 @@ y_test = ts_test[['price']].values
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 #Get the model parameters by iteration
-params = model.best_parameters
-error = model.best_losses
-params = np.array(params)
+params = model.get_best_parameters()
+errors = model.get_best_losses()
 
 #SST for train and test
 SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
