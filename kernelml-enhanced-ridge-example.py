@@ -32,7 +32,7 @@ print("time:",end_time-start_time)
 params = model.get_best_parameters()
 errors = model.get_best_losses()
 update_history = model.get_parameter_update_history()
-best_w = params[np.where(errors==np.min(errors))].T
+w = params[np.where(errors==np.min(errors))].T
 alpha,w = w[-1][0],w[:-1]
 print('alpha:',alpha)
 print('w:',w)
