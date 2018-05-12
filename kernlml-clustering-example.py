@@ -142,9 +142,8 @@ def generate_pdfs(x,y,w):
              ]
         return rv
 
-params = model.best_parameters
-error = model.best_losses
-params = np.array(params)
+params = model.get_best_parameters()
+errors = model.get_best_losses()
 w = params[np.where(error==np.min(error))].flatten()
 
 df = pd.DataFrame(X)
