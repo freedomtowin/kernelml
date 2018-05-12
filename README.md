@@ -6,16 +6,16 @@ Project Status: Beta
 1. [Installation](#installation)
 2. [Examples](#examples)
     1. [Kernel Mapping](#kernelmapping)
-    2. [Access Model Parameters/Losses](#accessmodel)
     2. [Fit Optimal Power Transformation](#powertransformation)
     3. [Fit Sinusoidal Parameters - Ensemble Model](#sinusoids)
     4. [Negative Log Likelihood Loss](#loglikelihood)
     5. [Enhanced Ridge Regression](#ridge)
 3. [Methods](#methods)
-    1. [Convergence](#convergence)
-    2. [Adjust Default Random Sampling Parameters](#adjustrandom)
-    3. [Adjust Optimizer Parameters](#adjustopt)
-    4. [Override Random Sampling Functions](#simulationdefaults)
+    1. [Access Model Parameters/Losses](#accessmodel)
+    2. [Convergence](#convergence)
+    3. [Adjust Default Random Sampling Parameters](#adjustrandom)
+    4. [Adjust Optimizer Parameters](#adjustopt)
+    5. [Override Random Sampling Functions](#simulationdefaults)
 
 ## Installation <a name="installation"></a>
 
@@ -54,15 +54,6 @@ def euclid_dist_to_centroid(x,y,w):
         euclid = np.sqrt((w[0]*lon1-w[0]*lon2)**2+(w[1]*lat1-w[1]*lat2)**2) 
         haver = y
         return np.sum((euclid-haver)**2)
-```
-
-### Access Model Parameters and Losses <a name="accessmodel"></a>
-
-```python
-params = model.best_parameters
-error = model.best_losses
-params = np.array(params)
-best_w = params[np.where(error==np.min(error))].flatten()
 ```
 
 ### Non Linear Coefficients - Power Transformation <a name="powertransformation"></a>
@@ -147,6 +138,14 @@ kernelml.kernel_optimize_(plot=False,print_feedback=True)
 # Appends an array of ones to the left hand side of the numpy input matrix
 model.add_intercept()
 ```
+### Access Model Parameters and Losses <a name="accessmodel"></a>
+
+```python
+params = model.get_best_parameters()
+errors = model.get_best_losses()
+update_history = model.get_parameter_update_history()
+best_w = params[np.where(error==np.min(error))].flatten()
+```
 
 ### Convergence <a name="convergence"></a>
 
@@ -163,7 +162,7 @@ if np.all(np.abs(convergence)<1):
 The formula creates a Z-score using the last 10 parameters and the best parameter. If the Z-score for all the parameters is less than 1, then the algorithm can be said to have converged. This convergence solution works well when there is a theoretical best parameter set.
 
 ```python
-kernelml.adjust_convergence_z_score(z=1)
+model.adjust_convergence_z_score(z=1)
 ```
 * **z:** the z score -  defines when the algorithm converges
 
@@ -173,7 +172,7 @@ Note: the values in the following functions will be ignored when the random samp
 
 ```python
 # Adjusts random simulation of parameters
-kernelml.default_random_simulation_params(self,init_random_sample_num=1000,
+model.default_random_simulation_params(self,init_random_sample_num=1000,
                                             random_sample_num=100,prior_uniform_low=-1,prior_uniform_high=1)
 ```
 * **init_random_sample_num:** the number of initial simulated parameters (+bias)
@@ -185,7 +184,7 @@ kernelml.default_random_simulation_params(self,init_random_sample_num=1000,
 
 ```python
 # Adjusts how the optimizer analyzes and updates the parameters
-kernelml.adjust_optimizer(self,total_iterations=100, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
+model.adjust_optimizer(self,total_iterations=100, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
 ```
 * **total_iterations:** number of iterations (+bias)
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
