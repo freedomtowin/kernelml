@@ -1,4 +1,3 @@
-
 import pandas as pd
 import time
 import seaborn
@@ -10,12 +9,13 @@ import kernelml
 train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
+
 def ridge_least_sqs_loss(x,y,w):
     alpha,w = w[-1][0],w[:-1]
     penalty = 0
     value = 1
-    if alpha<=value:
-        penalty = 10*abs(value-alpha)
+    if alpha<value:
+        penalty = 1*abs(value-alpha)
     hypothesis = x.dot(w)
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
@@ -54,10 +54,6 @@ yp_test = X.dot(w)
 SSE_test = np.sum((y_test-yp_test)**2)
 
 #Compare to sklearn.Ridge(alpha=1)
-X_train = train[['sqft_living','bedrooms','bathrooms']].values
-y_train = train[['price']].values
-X_test = test[['sqft_living','bedrooms','bathrooms']].values
-y_test = test[['price']].values
 model = linear_model.Ridge(alpha=1)
 model.fit(X_train,y_train)
 print('kernelml validation r-squared:',1-SSE_test/SST_test)
