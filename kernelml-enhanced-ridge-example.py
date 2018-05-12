@@ -28,7 +28,7 @@ SST_train = np.sum((y_train-np.mean(y_train))**2)
 SST_test = np.sum((y_test-np.mean(y_test))**2)
 
 start_time = time.time()
-model = kernel_optimizer(X_train,y_train,ridge_least_sqs_loss,num_param=5)
+model = kernelml.kernel_optimizer(X_train,y_train,ridge_least_sqs_loss,num_param=5)
 model.add_intercept()
 
 model.default_random_simulation_params(prior_uniform_low=1,prior_uniform_high=2)
