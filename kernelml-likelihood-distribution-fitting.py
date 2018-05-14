@@ -7,10 +7,14 @@ from sklearn import linear_model
 import kernelml
 from scipy import stats
 
+train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
+test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
+
+
 def prior_sampler_custom(num_param):
-        w1 = np.random.uniform(1,np.mean(X),size=(num_param,1000))
-        w2 = np.random.normal(np.std(X),1,size=(num_param,1000))
-        w3 = np.random.uniform(1,2,size=(num_param,1000))
+        w1 = np.random.uniform(1,np.mean(X),size=(num_param,500))
+        w2 = np.random.normal(np.std(X),1,size=(num_param,500))
+        w3 = np.random.uniform(1,2,size=(num_param,500))
         w = np.hstack((w1,w2,w3))
         return w
 
@@ -37,8 +41,8 @@ model = kernelml.kernel_optimizer(X,vals,loss_function,num_param=6)
 #change how the initial parameters are sampled
 model.change_prior_sampler(prior_sampler_custom)
 #change how many posterior samples are created for each parameter
-model.default_random_simulation_params(random_sample_num=200)
-model.adjust_optimizer(update_magnitude=10,analyze_n_parameters=50)
+model.default_random_simulation_params(random_sample_num=100)
+model.adjust_optimizer(update_magnitude=0.1,analyze_n_parameters=50)
 model.adjust_convergence_z_score(1.9)
 model.kernel_optimize_(plot=True)   
 
