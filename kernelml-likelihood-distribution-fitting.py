@@ -37,7 +37,7 @@ X = np.linspace(np.min(train[['price']].values),np.max(train[['price']].values),
 X = X.reshape(-1,1)
 vals = vals.flatten()/np.max(vals)
 vals = vals.reshape(-1,1)
-model = kernelml.kernel_optimizer(X,vals,loss_function,num_param=6)
+model = kernelml.kernel_optimizer(X,vals,loss_function,num_param=3)
 #change how the initial parameters are sampled
 model.change_prior_sampler(prior_sampler_custom)
 #change how many posterior samples are created for each parameter
