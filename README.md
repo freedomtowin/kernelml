@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.510
+Current Version: 2.511
 
 ## Table of contents
 1. [Installation](#installation)
@@ -15,6 +15,7 @@ Current Version: 2.510
 3. [Methods](#methods)
     1. [Access Model Parameters/Losses](#accessmodel)
     2. [Convergence](#convergence)
+    3. [Parameter Transforms](#transforms)
     3. [Adjust Default Random Sampling Parameters](#adjustrandom)
     4. [Adjust Optimizer Parameters](#adjustopt)
     5. [Override Random Sampling Functions](#simulationdefaults)
@@ -167,6 +168,20 @@ The formula creates a Z-score using the last 10 parameters and the best paramete
 model.adjust_convergence_z_score(z=1)
 ```
 * **z:** the z score -  defines when the algorithm converges
+
+### Parameter Transforms <a name="transform"></a>
+
+The default parameter tranform function can be overrided. The parameters can be transformed before the loss calculations and parameter updates. For example, the parameters can be transformed if some parameters must be integers, positive, or within a certain range.
+
+```python
+# The default parameter transform return the parameter set unchanged 
+model.default_parameter_transform(w):
+    return w
+
+# Change the default parameter transform
+model.change_parameter_transform(fcn)
+```
+* **w:** the parameter set used to calculate loss
 
 ### Adjust Random Sampling Parameters <a name="adjustrandom"></a>
 
