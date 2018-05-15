@@ -65,7 +65,7 @@ params = model.get_best_parameters()
 errors = model.get_best_losses()
 
 #Create ensemble of features
-feature_num = 3
+feature_num = 4
 predicted_output_as_feature_train = np.zeros((X_train.shape[0],feature_num))
 predicted_output_as_feature_test = np.zeros((X_test.shape[0],feature_num))
 
