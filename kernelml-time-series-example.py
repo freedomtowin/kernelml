@@ -46,7 +46,7 @@ model.add_intercept()
 #monte carlo simulation parameters
 model.default_random_simulation_params(random_sample_num=1000)
 #optimizer parameters
-model.adjust_optimizer(analyze_n_parameters=10)
+model.adjust_optimizer(update_magnitude=50,analyze_n_parameters=10)
 model.kernel_optimize_(plot=True)   
 
 ### Ensemble Model
