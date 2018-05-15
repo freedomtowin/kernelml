@@ -41,7 +41,7 @@ def sin_least_sqs_loss(x,y,w):
 
 X = ts_train[['i']].values
 y = ts_train[["price"]].values
-model = kernelml.kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
+model = kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
 model.add_intercept()
 #monte carlo simulation parameters
 model.default_random_simulation_params(random_sample_num=1000)
@@ -64,17 +64,14 @@ X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 params = model.get_best_parameters()
 errors = model.get_best_losses()
 
-#SST for train and test
-SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
-SST_test = np.sum((y_test-np.mean(y_test))**2)/len(y_test)
-
 #Create ensemble of features
-predicted_output_as_feature_train = np.zeros((X_train.shape[0],3))
-predicted_output_as_feature_test = np.zeros((X_test.shape[0],3))
+feature_num = 3
+predicted_output_as_feature_train = np.zeros((X_train.shape[0],feature_num))
+predicted_output_as_feature_test = np.zeros((X_test.shape[0],feature_num))
 
 #Features from last three parameter updates
 i=0
-for w in params[-3:,:]:
+for w in params[-feature_num:,:]:
     predicted_output_as_feature_train[:,i] = sin_non_linear_model(X_train,w).flatten()
     predicted_output_as_feature_test[:,i] = sin_non_linear_model(X_test,w).flatten()
     i+=1
@@ -93,5 +90,4 @@ plt.plot(y_test)
 plt.title("average housing prices by date - valid data")
 plt.show()
 
-SSE = np.sum((y_test-linreg.predict(predicted_output_as_feature_test))**2)/len(y_test)
-print('validation rsquared:',1-SSE/SST_test)
+print('validation rsquared:',linreg.score(predicted_output_as_feature_test,y_test))
