@@ -12,10 +12,10 @@ test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'wate
 
 
 def prior_sampler_custom(num_param):
-        w1 = np.random.uniform(1,np.mean(X),size=(num_param,500))
-        w2 = np.random.normal(np.std(X),1,size=(num_param,500))
-        w3 = np.random.uniform(1,2,size=(num_param,500))
-        w = np.hstack((w1,w2,w3))
+        dist1 = np.random.uniform(1,np.mean(X),size=(num_param,5000))
+        dist2 = np.random.normal(np.std(X),np.std(X),size=(num_param,5000))
+        dist3 = np.random.uniform(0.1,2*np.mean(X),size=(num_param,5000))
+        w = np.hstack((dist1,dist2,dist3))
         return w
 
 def liklihood_loss(x,y,w):
@@ -42,7 +42,7 @@ model = kernelml.kernel_optimizer(X,vals,loss_function,num_param=3)
 model.change_prior_sampler(prior_sampler_custom)
 #change how many posterior samples are created for each parameter
 model.default_random_simulation_params(random_sample_num=100)
-model.adjust_optimizer(update_magnitude=0.1,analyze_n_parameters=50)
+model.adjust_optimizer(update_magnitude=100,analyze_n_parameters=30)
 model.adjust_convergence_z_score(1.9)
 model.kernel_optimize_(plot=True)   
 
