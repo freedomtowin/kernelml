@@ -39,7 +39,7 @@ model = kernelml.kernel_optimizer(X,vals,loss_function,num_param=3)
 model.change_prior_sampler(prior_sampler_custom)
 #change how many posterior samples are created for each parameter
 model.default_random_simulation_params(random_sample_num=100)
-model.adjust_optimizer(update_magnitude=100,analyze_n_parameters=30)
+model.adjust_optimizer(update_magnitude=1,analyze_n_parameters=30)
 model.adjust_convergence_z_score(1.9)
 model.kernel_optimize_(plot=True)   
 
