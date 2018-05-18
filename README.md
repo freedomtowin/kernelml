@@ -206,7 +206,7 @@ model.adjust_optimizer(self,total_iterations=100, analyze_n_parameters=20, n_par
 * **total_iterations:** number of iterations (+bias)
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
-* **update_magnitude:** the magnitude of the updates (+variance)
+* **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
