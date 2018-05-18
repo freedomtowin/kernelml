@@ -46,7 +46,7 @@ model.add_intercept()
 #monte carlo simulation parameters
 model.default_random_simulation_params(random_sample_num=1000)
 #optimizer parameters
-model.adjust_optimizer(update_magnitude=50,analyze_n_parameters=10)
+model.adjust_optimizer(update_magnitude=10,analyze_n_parameters=20)
 model.kernel_optimize_(plot=True)   
 
 ### Ensemble Model
@@ -65,18 +65,19 @@ params = model.get_best_parameters()
 errors = model.get_best_losses()
 
 #Create ensemble of features
-feature_num = 4
+feature_num = 10
+best_w_arr = errors.argsort()[:feature_num]
 predicted_output_as_feature_train = np.zeros((X_train.shape[0],feature_num))
 predicted_output_as_feature_test = np.zeros((X_test.shape[0],feature_num))
 
 #Features from last three parameter updates
 i=0
-for w in params[-feature_num:,:]:
+for w in params[best_w_arr,:]:
     predicted_output_as_feature_train[:,i] = sin_non_linear_model(X_train,w).flatten()
     predicted_output_as_feature_test[:,i] = sin_non_linear_model(X_test,w).flatten()
     i+=1
 
-linreg = linear_model.LinearRegression()
+linreg = linear_model.Ridge()
 linreg.fit(predicted_output_as_feature_train,y_train)
 print('train score:',linreg.score(predicted_output_as_feature_train,y_train))
 
