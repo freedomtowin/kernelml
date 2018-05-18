@@ -41,7 +41,7 @@ def sin_least_sqs_loss(x,y,w):
 
 X = ts_train[['i']].values
 y = ts_train[["price"]].values
-model = kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
+model = kernelml.kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
 model.add_intercept()
 #monte carlo simulation parameters
 model.default_random_simulation_params(random_sample_num=1000)
