@@ -5,6 +5,8 @@ import scipy.stats as stats
 from sklearn import linear_model
 import time
 import kernelml
+import matplotlib as mpl
+mpl.style.use('default')
 
 def generate_MoG_data(num_data, means, covariances, weights):
     """ Creates a list of data points """
