@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.512
+Current Version: 2.513
 
 ## Table of contents
 1. [Installation](#installation)
@@ -201,12 +201,17 @@ model.default_random_simulation_params(self,init_random_sample_num=1000,
 
 ```python
 # Adjusts how the optimizer analyzes and updates the parameters
-model.adjust_optimizer(self,total_iterations=100, analyze_n_parameters=20, n_parameter_updates=100, update_magnitude=100)
+model.adjust_optimizer(self,total_iterations=100,
+                            analyze_n_parameters=20,
+                            n_parameter_updates=100,
+                            update_magnitude=100,
+                            sequential_update=True)
 ```
 * **total_iterations:** number of iterations (+bias)
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
+* **sequential_update:** controls whether the parameters are updated sequentially or randomly
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
