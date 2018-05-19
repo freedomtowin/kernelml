@@ -23,7 +23,7 @@ Current Version: 2.514
 ## Installation <a name="installation"></a>
 
 ```
-pip install kernelml
+pip install kernelml --upgrade
 ```
 
 ## Examples <a name="examples"></a>
