@@ -5,7 +5,7 @@ import scipy.stats as stats
 from sklearn import linear_model
 import time
 import kernelml
-#For some reason seaborn scatter plot are bugged for this example 
+#The reason seaborn scatter plots are bugged for this example (on my machine)
 import matplotlib as mpl
 mpl.style.use('default')
 
