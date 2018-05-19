@@ -39,6 +39,7 @@ d = np.vstack(data)
 plt.plot(d[:,0], d[:,1],'ko')
 plt.rcParams.update({'font.size':16})
 plt.tight_layout()
+plt.show()
 
 vals, indxs = np.histogramdd(d, normed=False,bins=20)
 i=0
@@ -118,12 +119,14 @@ model.change_random_sampler(sampler_custom)
 #change the prior uniform distribution
 model.default_random_simulation_params(init_random_sample_num=100,prior_uniform_low=0.1,prior_uniform_high=2.5)
 #try to make the algorithm converge faster 
-#smaller updates will have a tendancy to stick (default is 100)
+#update magnitude should correspond to loss's magnitude
 #low the number of parameter update and rely more on the simulation
 #analyze more parameters to add variance to the updates
-model.adjust_optimizer(update_magnitude=20,
+#update parameters in random order
+model.adjust_optimizer(update_magnitude=1,
                        n_parameter_updates=10,
-                       analyze_n_parameters=50)
+                       analyze_n_parameters=50,
+                       sequential_update=False)
 model.adjust_convergence_z_score(2.0)
 model.kernel_optimize_()    
 end_time = time.time()
