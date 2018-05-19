@@ -16,6 +16,8 @@ def ridge_least_sqs_loss(x,y,w):
     value = 1
     if alpha<value:
         penalty = 1*abs(value-alpha)
+    if alpha<0:
+        alpha=0
     hypothesis = x.dot(w)
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
@@ -28,10 +30,11 @@ SST_train = np.sum((y_train-np.mean(y_train))**2)
 SST_test = np.sum((y_test-np.mean(y_test))**2)
 
 start_time = time.time()
-model = kernelml.kernel_optimizer(X_train,y_train,ridge_least_sqs_loss,num_param=5)
+model = kernel_optimizer(X_train,y_train,ridge_least_sqs_loss,num_param=5)
 model.add_intercept()
 
 model.default_random_simulation_params(prior_uniform_low=1,prior_uniform_high=2)
+model.adjust_optimizer(update_magnitude=1000,n_parameter_updates=50)
 model.kernel_optimize_()
 end_time = time.time()
 print("time:",end_time-start_time)
