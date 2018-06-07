@@ -46,6 +46,6 @@ end_time = time.time()
 print("time:",end_time-start_time)
 
 SST = np.sum((y-np.mean(y))**2) 
-params = model.get_best_parameters()
-errors = model.get_best_losses()
+params = model.get_param_by_iter()
+errors = model.get_loss_by_iter()
 update_history = model.get_parameter_update_history()
