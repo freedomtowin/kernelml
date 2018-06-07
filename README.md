@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.518
+Current Version: 2.532
 
 ## Table of contents
 1. [Installation](#installation)
@@ -132,7 +132,7 @@ kernelml.kernel_optimizer(X,y,loss_function,num_param)
 
 ```python
 # Begins the optimization process
-kernelml.kernel_optimize_(plot=False,print_feedback=True)
+kernelml.kernel_optimize_(plot_feedback=False,print_feedback=False)
 ```
 * **plot:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
@@ -205,13 +205,15 @@ model.adjust_optimizer(self,total_iterations=100,
                             analyze_n_parameters=20,
                             n_parameter_updates=100,
                             update_magnitude=100,
-                            sequential_update=True)
+                            sequential_update=True,
+                            percent_of_params_updated=1)
 ```
 * **total_iterations:** number of iterations (+bias)
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 * **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
 * **sequential_update:** controls whether the parameters are updated sequentially or randomly
+* **percent_of_params_updated:** the percentage of parameters updated every iteration 
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
