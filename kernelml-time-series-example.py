@@ -61,8 +61,8 @@ y_test = ts_test[['price']].values
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 #Get the model parameters by iteration
-params = model.get_best_parameters()
-errors = model.get_best_losses()
+params = model.get_param_by_iter()
+errors = model.get_loss_by_iter()
 
 #Create ensemble of features
 feature_num = 10
