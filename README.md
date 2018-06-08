@@ -144,8 +144,8 @@ model.add_intercept()
 ### Access Model Parameters and Losses <a name="accessmodel"></a>
 
 ```python
-params = model.get_best_parameters()
-errors = model.get_best_losses()
+params = model.get_param_by_iter()
+errors = model.get_loss_by_iter()
 update_history = model.get_parameter_update_history()
 best_w = params[np.where(errors==np.min(errors))].flatten()
 ```
