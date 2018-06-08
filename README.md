@@ -150,6 +150,22 @@ update_history = model.get_parameter_update_history()
 best_w = params[np.where(errors==np.min(errors))].flatten()
 ```
 
+### Parallel Processing with Ipyrallel <a name="accessmodel"></a>
+
+Initialize the parallel engines, set the direct view block to true, and then import the require libraries to the engines.
+
+```python
+from ipyparallel import Client
+rc = Client(profile='default')
+dview = rc[:]
+
+dview.block = True
+
+with dview.sync_imports():
+    import numpy as np
+    from scipy import stats
+```
+
 ### Convergence <a name="convergence"></a>
 
 The model saves the best parameter and user-defined loss after each iteration. The model also record a history of all parameter updates. The question is how to use this data to define convergence. One possible solution is:
