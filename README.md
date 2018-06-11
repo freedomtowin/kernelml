@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.532
+Current Version: 2.542
 
 ## Table of contents
 1. [Installation](#installation)
@@ -123,12 +123,13 @@ def ridge_least_sqs_loss(x,y,w):
 
 ```python
 # Initializes the optimizer
-kernelml.kernel_optimizer(X,y,loss_function,num_param)
+kernelml.kernel_optimizer(X,y,loss_function,num_param,args=[])
 ```
 * **X:** input matrix
 * **y:** output vector
 * **loss_function:** f(x,y,w), outputs loss
 * **num_param:** number of parameters in the loss function
+* **arg:** list of extra data to be passed to the loss function
 
 ```python
 # Begins the optimization process
