@@ -15,7 +15,7 @@ def ridge_least_sqs_loss(x,y,w):
     penalty = 0
     value = 1
     if alpha<value:
-        penalty = 1*abs(value-alpha)
+        penalty = 1.5*abs(value-alpha)
     if alpha<0:
         alpha=0
     hypothesis = x.dot(w)
