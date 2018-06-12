@@ -128,7 +128,7 @@ model.adjust_optimizer(update_magnitude=1,
                        analyze_n_parameters=50,
                        sequential_update=False)
 model.adjust_convergence_z_score(2.0)
-model.kernel_optimize_()    
+model.optimize()    
 end_time = time.time()
 print("time:",end_time-start_time)
 
