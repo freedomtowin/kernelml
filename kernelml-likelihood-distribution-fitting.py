@@ -41,7 +41,7 @@ model.change_prior_sampler(prior_sampler_custom)
 model.default_random_simulation_params(random_sample_num=100)
 model.adjust_optimizer(update_magnitude=1,n_parameter_updates=50,analyze_n_parameters=30)
 model.adjust_convergence_z_score(1.9)
-model.kernel_optimize_(plot_feedback=True)   
+model.optimize(plot_feedback=True)   
 
 params = model.get_param_by_iter()
 errors = model.get_loss_by_iter()
