@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.542
+Current Version: 2.544
 
 ## Table of contents
 1. [Installation](#installation)
@@ -123,7 +123,7 @@ def ridge_least_sqs_loss(x,y,w):
 
 ```python
 # Initializes the optimizer
-kernelml.kernel_optimizer(X,y,loss_function,num_param,args=[])
+model = kernelml.kernel_optimizer(X,y,loss_function,num_param,args=[])
 ```
 * **X:** input matrix
 * **y:** output vector
@@ -133,7 +133,7 @@ kernelml.kernel_optimizer(X,y,loss_function,num_param,args=[])
 
 ```python
 # Begins the optimization process
-kernelml.kernel_optimize_(plot_feedback=False,print_feedback=False)
+model.optimize(plot_feedback=False,print_feedback=False)
 ```
 * **plot:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
