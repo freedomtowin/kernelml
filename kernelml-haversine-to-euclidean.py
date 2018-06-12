@@ -41,7 +41,7 @@ start_time = time.time()
 X = train[['long','lat','mean_long','mean_lat']].values
 y = train[["haversine"]].values
 model = kernelml.kernel_optimizer(X,y,euclid_dist_to_centroid,num_param=2)
-model.kernel_optimize_()    
+model.optimize()    
 end_time = time.time()
 print("time:",end_time-start_time)
 
