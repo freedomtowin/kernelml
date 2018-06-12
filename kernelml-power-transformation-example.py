@@ -26,7 +26,7 @@ y_test = test[["price"]].values
 model = kernelml.kernel_optimizer(X_train,y_train,poly_least_sqs_loss,num_param=4)
 model.add_intercept()
 model.default_random_simulation_params(prior_uniform_low=0,prior_uniform_high=2)
-model.kernel_optimize_(plot_feedback=True)    
+model.optimize(plot_feedback=True)    
 end_time = time.time()
 print("time:",end_time-start_time)
 
