@@ -47,7 +47,7 @@ model.add_intercept()
 model.default_random_simulation_params(random_sample_num=1000)
 #optimizer parameters
 model.adjust_optimizer(update_magnitude=100,n_parameter_updates=100,analyze_n_parameters=20)
-model.kernel_optimize_()   
+model.optimize()   
 
 ### Ensemble Model
 
