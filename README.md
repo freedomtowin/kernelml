@@ -235,6 +235,15 @@ The default random sampling functions for the prior and posterior distributions 
             return np.random.multivariate_normal(mean, covariance, (random_sample_num)).T
         except:
             print(best,np.where(error_by_iter==np.min(error_by_iter)))
+            
+    #intermediate sampler
+    def intermediate_uniform_distribution(self,num_param):
+        result = []
+        for i in range(num_param):
+            x = np.random.uniform(self.w[i]-0.1*self.w[i],self.w[i]+0.1*self.w[i],size=(1,10000)).T
+            result.append(x)
+        result = np.squeeze(np.array(result))
+        return result         
 ```
 
 ### Parameter Transforms <a name="transform"></a>
