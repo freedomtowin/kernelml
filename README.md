@@ -15,10 +15,8 @@ Current Version: 2.550
 3. [Methods](#methods)
     1. [Access Model Parameters/Losses](#accessmodel)
     2. [Convergence](#convergence)
-    3. [Parameter Transforms](#transforms)
-    3. [Adjust Default Random Sampling Parameters](#adjustrandom)
-    4. [Adjust Optimizer Parameters](#adjustopt)
-    5. [Override Random Sampling Functions](#simulationdefaults)
+    3. [Override Random Sampling Functions](#simulationdefaults)
+    4. [Parameter Transforms](#transforms)
 
 ## Installation <a name="installation"></a>
 
@@ -119,7 +117,7 @@ def ridge_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
 ```
 
-## Methods
+## Methods <a name="methods"></a>
 
 ```python
 kml = kernelml.KernelML(prior_sampler_fcn=None,
