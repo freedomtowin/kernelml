@@ -194,6 +194,8 @@ dview.block = True
 with dview.sync_imports():
     import numpy as np
     from scipy import stats
+    
+kml.use_ipyparallel(dview)
 ```
 
 ### Convergence <a name="convergence"></a>
