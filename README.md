@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.545
+Current Version: 2.550
 
 ## Table of contents
 1. [Installation](#installation)
