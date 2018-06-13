@@ -119,35 +119,66 @@ def ridge_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
 ```
 
-## Methods <a name="methods"></a>
+## Methods
 
 ```python
-# Initializes the optimizer
-model = kernelml.kernel_optimizer(X,y,loss_function,num_param,args=[])
+kml = kernelml.KernelML(prior_sampler_fcn=None,
+                 sampler_fcn=None,
+                 intermediate_sampler_fcn=None,
+                 parameter_transform_fcn=None,
+                 batch_size=None)
+```
+* **prior_sampler_fcn:** the function defines how the initial parameter set is sampled 
+* **sampler_fcn:** the function defines how the parameters are sampled between interations
+* **intermediate_sampler_fcn:** this function defines how the priors are set between runs
+* **parameter_transform_fcn:** this function transforms the parameter vector before processing
+* **batch_size:** defines the random sample size before each run (default is all samples)
+
+
+```python
+# Begins the optimization process
+kml.optimize(self,X,y,loss_function,num_param,args=[],
+            runs=1,
+            total_iterations=100,
+            n_parameter_updates=100,
+            analyze_n_parameters=20,
+            update_magnitude=100,
+            sequential_update=True,
+            percent_of_params_updated=1,
+            convergence_z_score=1,
+            init_random_sample_num=1000,
+            random_sample_num=100,
+            prior_uniform_low=-1,
+            prior_uniform_high=1,
+            plot_feedback=False,
+            print_feedback=False)
 ```
 * **X:** input matrix
 * **y:** output vector
 * **loss_function:** f(x,y,w), outputs loss
 * **num_param:** number of parameters in the loss function
 * **arg:** list of extra data to be passed to the loss function
-
-```python
-# Begins the optimization process
-model.optimize(plot_feedback=False,print_feedback=False)
-```
-* **plot:** provides real-time plots of parameters and losses
+* **runs:** number of runs
+* **total_iterations:** number of iterations (+bias)
+* **analyze_n_parameters:** the number of parameters analyzed (+variance)
+* **n_parameter_updates:** the number of parameter updates per iteration (+bias)
+* **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
+* **sequential_update:** controls whether the parameters are updated sequentially or randomly
+* **percent_of_params_updated:** the percentage of parameters updated every iteration 
+* **z:** the z score -  defines when the algorithm converges
+* **init_random_sample_num:** the number of initial simulated parameters (+bias)
+* **random_sample_num:** the number of intermediate simulated parameters (+bias)
+* **prior_uniform_low:** default pior random sampler - uniform distribution - low
+* **prior_uniform_high:** default pior random sampler - uniform distribution - high
+* **plot_feedback:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
-```python
-# Appends an array of ones to the left hand side of the numpy input matrix
-model.add_intercept()
-```
 ### Access Model Parameters and Losses <a name="accessmodel"></a>
 
 ```python
-params = model.get_param_by_iter()
-errors = model.get_loss_by_iter()
-update_history = model.get_parameter_update_history()
+params = kml.model.get_param_by_iter()
+errors = kml.model.get_loss_by_iter()
+update_history = kml.model.get_parameter_update_history()
 best_w = params[np.where(errors==np.min(errors))].flatten()
 ```
 
@@ -171,6 +202,7 @@ with dview.sync_imports():
 
 The model saves the best parameter and user-defined loss after each iteration. The model also record a history of all parameter updates. The question is how to use this data to define convergence. One possible solution is:
 
+
 ```python
 #Convergence algorithm
 convergence = (best_parameter-np.mean(param_by_iter[-10:,:],axis=0))/(np.std(param_by_iter[-10:,:],axis=0))
@@ -180,57 +212,6 @@ if np.all(np.abs(convergence)<1):
     break
  ```
 The formula creates a Z-score using the last 10 parameters and the best parameter. If the Z-score for all the parameters is less than 1, then the algorithm can be said to have converged. This convergence solution works well when there is a theoretical best parameter set.
-
-```python
-model.adjust_convergence_z_score(z=1)
-```
-* **z:** the z score -  defines when the algorithm converges
-
-### Parameter Transforms <a name="transform"></a>
-
-The default parameter tranform function can be overrided. The parameters can be transformed before the loss calculations and parameter updates. For example, the parameters can be transformed if some parameters must be integers, positive, or within a certain range.
-
-```python
-# The default parameter transform return the parameter set unchanged 
-model.default_parameter_transform(w):
-    return w
-
-# Change the default parameter transform
-model.change_parameter_transform(fcn)
-```
-* **w:** the parameter set used to calculate loss
-
-### Adjust Random Sampling Parameters <a name="adjustrandom"></a>
-
-Note: the values in the following functions will be ignored when the random sampling functions are overrided.
-
-```python
-# Adjusts random simulation of parameters
-model.default_random_simulation_params(self,init_random_sample_num=1000,
-                                            random_sample_num=100,prior_uniform_low=-1,prior_uniform_high=1)
-```
-* **init_random_sample_num:** the number of initial simulated parameters (+bias)
-* **random_sample_num:** the number of intermediate simulated parameters (+bias)
-* **prior_uniform_low:** default pior random sampler - uniform distribution - low
-* **prior_uniform_high:** default pior random sampler - uniform distribution - high
-   
-### Adjust Optimizer Parameters  <a name="adjustopt"></a>
-
-```python
-# Adjusts how the optimizer analyzes and updates the parameters
-model.adjust_optimizer(self,total_iterations=100,
-                            analyze_n_parameters=20,
-                            n_parameter_updates=100,
-                            update_magnitude=100,
-                            sequential_update=True,
-                            percent_of_params_updated=1)
-```
-* **total_iterations:** number of iterations (+bias)
-* **analyze_n_parameters:** the number of parameters analyzed (+variance)
-* **n_parameter_updates:** the number of parameter updates per iteration (+bias)
-* **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
-* **sequential_update:** controls whether the parameters are updated sequentially or randomly
-* **percent_of_params_updated:** the percentage of parameters updated every iteration 
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
@@ -256,11 +237,13 @@ The default random sampling functions for the prior and posterior distributions 
             print(best,np.where(error_by_iter==np.min(error_by_iter)))
 ```
 
+### Parameter Transforms <a name="transform"></a>
+
+The default parameter tranform function can be overrided. The parameters can be transformed before the loss calculations and parameter updates. For example, the parameters can be transformed if some parameters must be integers, positive, or within a certain range.
+
 ```python
-    #override functions
-    def change_random_sampler(self,fcn):
-        self.sampler = fcn
-        
-    def change_prior_sampler(self,fcn):
-        self.prior_sampler = fcn
-```            
+# The default parameter transform return the parameter set unchanged 
+def default_parameter_transform(w):
+    # rows,columns = (parameter set,iteration)
+    return w
+```
