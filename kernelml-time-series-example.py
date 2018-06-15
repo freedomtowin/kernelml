@@ -39,15 +39,48 @@ def sin_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y)
 
 
-X = ts_train[['i']].values
-y = ts_train[["price"]].values
-model = kernelml.kernel_optimizer(X,y,sin_least_sqs_loss,num_param=4)
-model.add_intercept()
-#monte carlo simulation parameters
-model.default_random_simulation_params(random_sample_num=1000)
-#optimizer parameters
-model.adjust_optimizer(update_magnitude=100,n_parameter_updates=100,analyze_n_parameters=20)
-model.optimize()   
+runs = 3
+zscore = 1.0
+umagnitude = 1
+analyzenparam = 10
+nupdates = 10
+npriorsamples=100
+nrandomsamples = 100
+tinterations = 10
+sequpdate = True
+
+
+kml = kernelml.KernelML(
+         prior_sampler_fcn=None,
+         sampler_fcn=None,
+         intermediate_sampler_fcn=None,
+         parameter_transform_fcn=None,
+         batch_size=None)
+
+
+X_train = ts_train[['i']].values
+y_train = ts_train[["price"]].values
+
+X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
+
+parameter_by_run = kml.optimize(X_train,y_train,loss_function=sin_least_sqs_loss,
+                                num_param=4,
+                                args=[],
+                                runs=runs,
+                                total_iterations=tinterations,
+                                analyze_n_parameters=analyzenparam,
+                                n_parameter_updates=nupdates,
+                                update_magnitude=umagnitude,
+                                sequential_update=sequpdate,
+                                percent_of_params_updated=0.5,
+                                init_random_sample_num=npriorsamples,
+                                random_sample_num=nrandomsamples,
+                                convergence_z_score=zscore,
+                                prior_uniform_low=-1,
+                                prior_uniform_high=1,
+                                plot_feedback=False,
+                                print_feedback=False)
+
 
 ### Ensemble Model
 
@@ -61,8 +94,8 @@ y_test = ts_test[['price']].values
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 #Get the model parameters by iteration
-params = model.get_param_by_iter()
-errors = model.get_loss_by_iter()
+params = kml.model.get_param_by_iter()
+errors = kml.model.get_loss_by_iter()
 
 #Create ensemble of features
 feature_num = 10
