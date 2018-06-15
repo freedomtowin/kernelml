@@ -134,22 +134,22 @@ kml = kernelml.KernelML(prior_sampler_fcn=None,
 
 
 ```python
-# Begins the optimization process
-kml.optimize(self,X,y,loss_function,num_param,args=[],
-            runs=1,
-            total_iterations=100,
-            n_parameter_updates=100,
-            analyze_n_parameters=20,
-            update_magnitude=100,
-            sequential_update=True,
-            percent_of_params_updated=1,
-            convergence_z_score=1,
-            init_random_sample_num=1000,
-            random_sample_num=100,
-            prior_uniform_low=-1,
-            prior_uniform_high=1,
-            plot_feedback=False,
-            print_feedback=False)
+# Begins the optimization process, returns a list of parameters by run
+parameters_by_run = kml.optimize(self,X,y,loss_function,num_param,args=[],
+                                    runs=1,
+                                    total_iterations=100,
+                                    n_parameter_updates=100,
+                                    analyze_n_parameters=20,
+                                    update_magnitude=100,
+                                    sequential_update=True,
+                                    percent_of_params_updated=1,
+                                    convergence_z_score=1,
+                                    init_random_sample_num=1000,
+                                    random_sample_num=100,
+                                    prior_uniform_low=-1,
+                                    prior_uniform_high=1,
+                                    plot_feedback=False,
+                                    print_feedback=False)
 ```
 * **X:** input matrix
 * **y:** output vector
@@ -163,7 +163,7 @@ kml.optimize(self,X,y,loss_function,num_param,args=[],
 * **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
 * **sequential_update:** controls whether the parameters are updated sequentially or randomly
 * **percent_of_params_updated:** the percentage of parameters updated every iteration 
-* **z:** the z score -  defines when the algorithm converges
+* **convergence_z_score:** the z score -  defines when the algorithm converges
 * **init_random_sample_num:** the number of initial simulated parameters (+bias)
 * **random_sample_num:** the number of intermediate simulated parameters (+bias)
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
