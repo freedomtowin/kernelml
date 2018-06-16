@@ -36,24 +36,27 @@ def sin_non_linear_model(x,w):
 def sin_least_sqs_loss(x,y,w):
     hypothesis = sin_non_linear_model(x,w)
     loss = hypothesis-y
-    return np.sum(loss**2)/len(y)
+    return np.mean(np.abs(loss))
 
 
-runs = 3
+
+runs = 1
 zscore = 1.0
-umagnitude = 1
+#make the update magnitude large for more variance and quicker convergence
+umagnitude = 100
 analyzenparam = 10
 nupdates = 10
-npriorsamples=100
-nrandomsamples = 100
-tinterations = 10
-sequpdate = True
+npriorsamples=1000
+nrandomsamples = 1000
+tinterations = 100
+sequpdate = False
 
 
-kml = kernelml.KernelML(
+kml = KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
+         mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
          batch_size=None)
 
@@ -72,7 +75,7 @@ parameter_by_run = kml.optimize(X_train,y_train,loss_function=sin_least_sqs_loss
                                 n_parameter_updates=nupdates,
                                 update_magnitude=umagnitude,
                                 sequential_update=sequpdate,
-                                percent_of_params_updated=0.5,
+                                percent_of_params_updated=1,
                                 init_random_sample_num=npriorsamples,
                                 random_sample_num=nrandomsamples,
                                 convergence_z_score=zscore,
