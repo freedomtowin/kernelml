@@ -41,12 +41,24 @@ def sin_least_sqs_loss(x,y,w):
     loss = hypothesis-y
     return np.mean(np.abs(loss))
 
-runs = 1
-zscore = 2.0
+#set the window to include a random set of 80% of the data (batch_size=200)
+def mini_batch_random_window(X,y,batch_size):
+    W = batch_size//2
+    center = np.random.randint(W,X.shape[0]-W)
+    X_batch = X[center-W:center+W]
+    y_batch = y[center-W:center+W]
+    return X_batch,y_batch
+
+#set the convergence score to a low value
 #make the update magnitude large for more variance and quicker convergence
-umagnitude = 100
+#make the number of updates large to find potentially unique solutions
+#sample 1000 parameters because the function is complex
+
+runs = 1
+zscore = 0.5
+umagnitude = 1000
 analyzenparam = 100
-nupdates = 10
+nupdates = 100
 npriorsamples=1000
 nrandomsamples = 1000
 tinterations = 100
@@ -57,9 +69,9 @@ kml = kernelml.KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
-         mini_batch_sampler_fcn=None,
+         mini_batch_sampler_fcn=mini_batch_random_window,
          parameter_transform_fcn=None,
-         batch_size=None)
+         batch_size=200)
 
 kml.use_ipyparallel(dview)
 
