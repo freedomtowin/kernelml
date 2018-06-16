@@ -34,25 +34,26 @@ def sin_non_linear_model(x,w):
     return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
 
 def sin_least_sqs_loss(x,y,w):
+    np=numpy
+    def sin_non_linear_model(x,w):
+        return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
     hypothesis = sin_non_linear_model(x,w)
     loss = hypothesis-y
     return np.mean(np.abs(loss))
 
-
-
 runs = 1
-zscore = 1.0
+zscore = 2.0
 #make the update magnitude large for more variance and quicker convergence
 umagnitude = 100
-analyzenparam = 10
+analyzenparam = 100
 nupdates = 10
 npriorsamples=1000
 nrandomsamples = 1000
 tinterations = 100
-sequpdate = False
+sequpdate = True
 
 
-kml = KernelML(
+kml = kernelml.KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
@@ -60,6 +61,7 @@ kml = KernelML(
          parameter_transform_fcn=None,
          batch_size=None)
 
+kml.use_ipyparallel(dview)
 
 X_train = ts_train[['i']].values
 y_train = ts_train[["price"]].values
@@ -101,7 +103,7 @@ params = kml.model.get_param_by_iter()
 errors = kml.model.get_loss_by_iter()
 
 #Create ensemble of features
-feature_num = 10
+feature_num = 5
 best_w_arr = errors.argsort()[:feature_num]
 predicted_output_as_feature_train = np.zeros((X_train.shape[0],feature_num))
 predicted_output_as_feature_test = np.zeros((X_test.shape[0],feature_num))
