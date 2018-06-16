@@ -244,6 +244,14 @@ The default random sampling functions for the prior and posterior distributions 
             result.append(x)
         result = np.squeeze(np.array(result))
         return result         
+        
+    #mini batch random choice sampler
+    def mini_batch_random_choice(X,y,batch_size):
+        all_samples = np.arange(0,X.shape[0])
+        rand_sample = np.random.choice(all_samples,size=batch_size,replace=False)
+        X_batch = X[rand_sample]
+        y_batch = y[rand_sample]
+        return X_batch,y_batch
 ```
 
 ### Parameter Transforms <a name="transform"></a>
