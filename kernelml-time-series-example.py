@@ -33,7 +33,7 @@ plt.show()
 def sin_non_linear_model(x,w):
     return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
 
-def sin_least_sqs_loss(x,y,w):
+def sin_mean_loss(x,y,w):
     hypothesis = sin_non_linear_model(x,w)
     loss = hypothesis-y
     return np.mean(np.abs(loss))
@@ -75,7 +75,7 @@ y_train = ts_train[["price"]].values
 
 X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 
-parameter_by_run = kml.optimize(X_train,y_train,loss_function=sin_least_sqs_loss,
+parameter_by_run = kml.optimize(X_train,y_train,loss_function=sin_mean_loss,
                                 num_param=4,
                                 args=[],
                                 runs=runs,
