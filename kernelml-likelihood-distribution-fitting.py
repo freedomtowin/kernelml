@@ -11,7 +11,8 @@ train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'wa
 test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
 #sample parameters from distribution
-def prior_sampler_custom(num_param):
+#the mean of X seems like a reasonable center for the distribution params
+def prior_sampler_custom(weights,num_param):
     w = np.random.uniform(np.mean(X),1,size=(num_param,1000))
     return w 
 
@@ -22,34 +23,62 @@ def liklihood_loss(x,y,w):
     loss = -1*((1-y).T.dot(np.log(1-hypothesis)) + y.T.dot(np.log(hypothesis)))/len(y)
     return loss.flatten()[0]
 
-def loss_function(x,y,w):
+def distribution_loss(x,y,w):
     alpha1,loc1,scale1 = w[0],w[1],w[2]
     rv = scale1*stats.norm(alpha1,loc1).pdf(x)
     loss = liklihood_loss(rv,y,w)
     return loss
 
 
-vals, indx = np.histogram(train[['price']].values, normed=False,bins=30)
-X = np.linspace(np.min(train[['price']].values),np.max(train[['price']].values),len(vals)) + np.diff(indx)
+y, indx = np.histogram(train[['price']].values, normed=False,bins=30)
+X = np.linspace(np.min(train[['price']].values),
+                np.max(train[['price']].values),len(vals)) + np.diff(indx)
 X = X.reshape(-1,1)
-vals = vals.flatten()/np.max(vals)
-vals = vals.reshape(-1,1)
-model = kernelml.kernel_optimizer(X,vals,loss_function,num_param=3)
-#change how the initial parameters are sampled
-model.change_prior_sampler(prior_sampler_custom)
-#change how many posterior samples are created for each parameter
-model.default_random_simulation_params(random_sample_num=100)
-model.adjust_optimizer(update_magnitude=1,n_parameter_updates=50,analyze_n_parameters=30)
-model.adjust_convergence_z_score(1.9)
-model.optimize(plot_feedback=True)   
 
-params = model.get_param_by_iter()
-errors = model.get_loss_by_iter()
-update_history = model.get_parameter_update_history()
-w = params[np.where(errors==np.min(errors))].T
+y = y.flatten()/np.max(y)
+y = y.reshape(-1,1)
 
+
+runs = 2
+zscore = 2.0
+umagnitude = 1
+analyzenparam = 30
+nupdates = 5
+npriorsamples=1000
+nrandomsamples = 100
+tinterations = 10
+sequpdate = False
+
+
+kml = kernelml.KernelML(
+         prior_sampler_fcn=prior_sampler_custom,
+         sampler_fcn=None,
+         intermediate_sampler_fcn=None,
+         mini_batch_sampler_fcn=None,
+         parameter_transform_fcn=None,
+         batch_size=None)
+
+parameter_by_run = kml.optimize(X,y,loss_function=loss_function,
+                                num_param=3,
+                                args=[],
+                                runs=runs,
+                                total_iterations=tinterations,
+                                analyze_n_parameters=analyzenparam,
+                                n_parameter_updates=nupdates,
+                                update_magnitude=umagnitude,
+                                sequential_update=sequpdate,
+                                percent_of_params_updated=1,
+                                init_random_sample_num=npriorsamples,
+                                random_sample_num=nrandomsamples,
+                                convergence_z_score=zscore,
+                                prior_uniform_low=1,
+                                prior_uniform_high=2,
+                                plot_feedback=False,
+                                print_feedback=False)
+
+
+w = parameter_by_run[-1]
 mean1,std1,scale1 = w[0],w[1],w[2]
-
 plt.stem(X, scale1*stats.norm.pdf(X,mean1,std1),'r', lw=5, alpha=0.6, label='normal pdf')
-plt.plot(X,vals)
+plt.plot(X,y)
 plt.show()
