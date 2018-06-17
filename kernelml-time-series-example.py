@@ -34,9 +34,6 @@ def sin_non_linear_model(x,w):
     return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
 
 def sin_least_sqs_loss(x,y,w):
-    np=numpy
-    def sin_non_linear_model(x,w):
-        return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
     hypothesis = sin_non_linear_model(x,w)
     loss = hypothesis-y
     return np.mean(np.abs(loss))
@@ -72,8 +69,6 @@ kml = kernelml.KernelML(
          mini_batch_sampler_fcn=mini_batch_random_window,
          parameter_transform_fcn=None,
          batch_size=200)
-
-kml.use_ipyparallel(dview)
 
 X_train = ts_train[['i']].values
 y_train = ts_train[["price"]].values
