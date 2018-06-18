@@ -177,7 +177,7 @@ parameters_by_run = kml.optimize(self,X,y,loss_function,num_param,args=[],
 params = kml.model.get_param_by_iter()
 errors = kml.model.get_loss_by_iter()
 update_history = kml.model.get_parameter_update_history()
-best_w = params[np.where(errors==np.min(errors))].flatten()
+best_w = kml.model.get_best_param()
 ```
 
 ### Parallel Processing with Ipyrallel <a name="accessmodel"></a>
