@@ -1,3 +1,4 @@
+#sorry for the messy code in advance
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -5,7 +6,7 @@ import scipy.stats as stats
 from sklearn import linear_model
 import time
 import kernelml
-#Seaborn scatter plots are giving me weird results for this example
+#Seaborn scatter plot error?
 import matplotlib as mpl
 mpl.style.use('default')
 
@@ -41,6 +42,7 @@ plt.rcParams.update({'font.size':16})
 plt.tight_layout()
 plt.show()
 
+#probably isn't the best way to get the n-d histogram data
 vals, indxs = np.histogramdd(d, normed=False,bins=20)
 i=0
 for indx in reversed(indxs):
@@ -59,7 +61,7 @@ vals = vals.flatten()
 X = X.values
 X = X[np.where(vals>0)]
 vals = vals[np.where(vals>0)]
-
+y = vals/np.max(vals)
 
 
 #multivariate normal sampler
@@ -98,39 +100,63 @@ def loss_function(x,y,w):
         u13,u23 = w[8],w[10]
         s13,s23 = w[9],w[11]
 
-        dist1 = stats.norm(u11,s11).pdf(x[:,0:1])
-        dist2 = stats.norm(u21,s21).pdf(x[:,1:2])
-        dist3 = stats.norm(u12,s12).pdf(x[:,0:1])
-        dist4 = stats.norm(u22,s22).pdf(x[:,1:2])
-        dist5 = stats.norm(u13,s13).pdf(x[:,0:1])
-        dist6 = stats.norm(u23,s23).pdf(x[:,1:2])
+        dist1 = scipy.stats.norm(u11,s11).pdf(x[:,0:1])
+        dist2 = scipy.stats.norm(u21,s21).pdf(x[:,1:2])
+        dist3 = scipy.stats.norm(u12,s12).pdf(x[:,0:1])
+        dist4 = scipy.stats.norm(u22,s22).pdf(x[:,1:2])
+        dist5 = scipy.stats.norm(u13,s13).pdf(x[:,0:1])
+        dist6 = scipy.stats.norm(u23,s23).pdf(x[:,1:2])
          
         rv = (dist1+dist2+dist3+dist4+dist5+dist6)/6
 
-        loss = np.sum(np.abs(y-rv))
+        loss = numpy.sum(numpy.abs(y-rv))
         return loss/len(y)
 
 
-start_time = time.time()
-y = vals/np.max(vals)
-model = kernelml.kernel_optimizer(X,y,loss_function,num_param=12)
 #change the random sampler
-model.change_random_sampler(sampler_custom)
 #change the prior uniform distribution
-model.default_random_simulation_params(init_random_sample_num=100,prior_uniform_low=0.1,prior_uniform_high=2.5)
 #try to make the algorithm converge faster 
 #update magnitude should correspond to loss's magnitude
 #low the number of parameter update and rely more on the simulation
 #analyze more parameters to add variance to the updates
 #update parameters in random order
-model.adjust_optimizer(update_magnitude=1,
-                       n_parameter_updates=10,
-                       analyze_n_parameters=50,
-                       sequential_update=False)
-model.adjust_convergence_z_score(2.0)
-model.optimize()    
-end_time = time.time()
-print("time:",end_time-start_time)
+runs = 1
+zscore = 2.0
+umagnitude = 1
+analyzenparam = 50
+nupdates = 10
+npriorsamples=100
+nrandomsamples = 100
+tinterations = 10
+percentupdated=1
+sequpdate = False
+
+kml = kernelml.KernelML(
+         prior_sampler_fcn=None,
+         sampler_fcn=sampler_custom,
+         intermediate_sampler_fcn=None,
+         mini_batch_sampler_fcn=None,
+         parameter_transform_fcn=None,
+         batch_size=None)
+
+kml.use_ipyparallel(dview)
+parameter_by_run = kml.optimize(X,y,loss_function=loss_function,
+                                num_param=12,
+                                args=[],
+                                runs=runs,
+                                total_iterations=tinterations,
+                                analyze_n_parameters=analyzenparam,
+                                n_parameter_updates=nupdates,
+                                update_magnitude=umagnitude,
+                                sequential_update=sequpdate,
+                                percent_of_params_updated=percentupdated,
+                                init_random_sample_num=npriorsamples,
+                                random_sample_num=nrandomsamples,
+                                convergence_z_score=zscore,
+                                prior_uniform_low=0.1,
+                                prior_uniform_high=2.5,
+                                plot_feedback=False,
+                                print_feedback=False)
 
 
 def generate_pdfs(x,y,w):
@@ -148,9 +174,8 @@ def generate_pdfs(x,y,w):
              ]
         return rv
 
-params = model.get_param_by_iter()
-errors = model.get_loss_by_iter()
-w = params[np.where(errors==np.min(errors))].flatten()
+
+w = kml.model.get_best_param().flatten()
 
 df = pd.DataFrame(X)
 df[['dist1','dist2','dist3','dist4','dist5','dist6']]=pd.DataFrame(np.squeeze(np.array(generate_pdfs(X,y,w)))).T
@@ -176,3 +201,4 @@ for i in df['index'].unique():
     clust = df[[0,1,'index']][df['index']==i]
     plt.scatter([x[0] for x in clust[[0]].values], [y[0] for y in clust[[1]].values])
 plt.show()
+
