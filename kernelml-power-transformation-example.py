@@ -14,21 +14,13 @@ def poly_function(x,w):
     return hypothesis
     
 def poly_least_sqs_loss(x,y,w):
+    import numpy as np
+    def poly_function(x,w):
+        hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
+        return hypothesis
     hypothesis = poly_function(x,w)
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y)
-
-start_time = time.time()
-X_train = train[['sqft_living']].values
-y_train = train[["price"]].values
-X_test = test[['sqft_living']].values
-y_test = test[["price"]].values
-model = kernelml.kernel_optimizer(X_train,y_train,poly_least_sqs_loss,num_param=4)
-model.add_intercept()
-model.default_random_simulation_params(prior_uniform_low=0,prior_uniform_high=2)
-model.optimize(plot_feedback=True)    
-end_time = time.time()
-print("time:",end_time-start_time)
 
 
 #Create train and test datasets
@@ -42,10 +34,50 @@ y_test = test[["price"]].values
 X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
+
+runs = 2
+zscore = 2.0
+umagnitude = 1
+analyzenparam = 10
+nupdates = 5
+npriorsamples=100
+nrandomsamples = 100
+tinterations = 10
+sequpdate = False
+
+
+kml = kernelml.KernelML(
+         prior_sampler_fcn=None,
+         sampler_fcn=None,
+         intermediate_sampler_fcn=None,
+         mini_batch_sampler_fcn=None,
+         parameter_transform_fcn=None,
+         batch_size=None)
+
+parameter_by_run = kml.optimize(X_train,y_train,loss_function=poly_least_sqs_loss,
+                                num_param=4,
+                                args=[],
+                                runs=runs,
+                                total_iterations=tinterations,
+                                analyze_n_parameters=analyzenparam,
+                                n_parameter_updates=nupdates,
+                                update_magnitude=umagnitude,
+                                sequential_update=sequpdate,
+                                percent_of_params_updated=1,
+                                init_random_sample_num=npriorsamples,
+                                random_sample_num=nrandomsamples,
+                                convergence_z_score=zscore,
+                                prior_uniform_low=0,
+                                prior_uniform_high=2,
+                                plot_feedback=False,
+                                print_feedback=False)
+
+
+
 #Get the model parameters by iteration
-params = model.get_param_by_iter()
-errors = model.get_loss_by_iter()
-update_history = model.get_parameter_update_history()
+params = kml.model.get_param_by_iter()
+errors = kml.model.get_loss_by_iter()
+update_history = kml.model.get_parameter_update_history()
 
 #SST for train and test
 SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
