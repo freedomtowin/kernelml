@@ -12,7 +12,7 @@ Current Version: 2.554
     3. [Fit Sinusoidal Parameters - Ensemble Model](#sinusoids)
     4. [Negative Log Likelihood Loss](#loglikelihood)
     5. [Enhanced Ridge Regression](#ridge)
-    5. [Parameter Tuning]
+    5. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
     1. [Access Model Parameters/Losses](#accessmodel)
     2. [Convergence](#convergence)
@@ -116,7 +116,7 @@ def ridge_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
 ```
 
-### Parameter Tuning "Black Magic Approach"
+### Parameter Tuning "Black Magic Approach" <a name="tuning"></a>
 
 Here is a potential strategy  for training a complex parameter networks with KernelML: 1) find a decent number of parameters to analyze 2) make the update magnitude relatively small 3) train the model on a random subsections of the data 4) rerun the optimizer using the best parameters of the previous run as the priors of the current run 5) set the number of iterations per run to a low number. 6) reduced the number of parameters tuned each iteration.
 
@@ -129,6 +129,10 @@ Here is a potential strategy  for training a complex parameter networks with Ker
 6) zscore (the convergence parameter)
 7) total_iterations (number of iterations)
 8) runs (number of restarts)
+
+![](https://user-images.githubusercontent.com/21232362/41566261-c6603e06-7328-11e8-98d6-a9ddaf88a507.png)
+
+![](https://user-images.githubusercontent.com/21232362/41566301-ee0d4a20-7328-11e8-94a4-6922c661d40d.png)
 
 The number random samples and the number of parameters to analyze need to be tuned for this approach. The plots above show the loss per parameter update for different values of analyze_n_parameters and a fixed number of random simulations per iteration (6000). The values selected for this parameters were 1000, 500, and 100, shown in the plots from left to right. The middle plot, 500, is smoother than the other two plots. I found that the algorithm performs better when the loss curve is smoother. In general, this parameter, analyze_n_parameters, should be at least equal to the number of parameters in the system. It might be an interest to create an algorithm ontop of kernelml that optimizes for smoothness. These plots can be generate from the optimize function by specifying plot_feedback=True.
 
