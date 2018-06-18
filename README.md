@@ -120,6 +120,8 @@ def ridge_least_sqs_loss(x,y,w):
 
 Here is a potential strategy  for training a complex parameter networks with KernelML: 1) find a decent number of parameters to analyze 2) make the update magnitude relatively small 3) train the model on a random subsections of the data 4) rerun the optimizer using the best parameters of the previous run as the priors of the current run 5) set the number of iterations per run to a low number. 6) reduced the number of parameters tuned each iteration.
 
+![](https://user-images.githubusercontent.com/21232362/41566261-c6603e06-7328-11e8-98d6-a9ddaf88a507.png)
+
 **KernelML Optimization Parameters:**
 1) sequential_update (whether the parameters are updated in order)
 2) update_magnitude (bias added to the parameter updates)
@@ -129,8 +131,6 @@ Here is a potential strategy  for training a complex parameter networks with Ker
 6) zscore (the convergence parameter)
 7) total_iterations (number of iterations)
 8) runs (number of restarts)
-
-![](https://user-images.githubusercontent.com/21232362/41566261-c6603e06-7328-11e8-98d6-a9ddaf88a507.png)
 
 ![](https://user-images.githubusercontent.com/21232362/41566301-ee0d4a20-7328-11e8-94a4-6922c661d40d.png)
 
