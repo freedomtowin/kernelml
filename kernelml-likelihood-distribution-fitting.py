@@ -32,7 +32,7 @@ def distribution_loss(x,y,w):
 
 y, indx = np.histogram(train[['price']].values, normed=False,bins=30)
 X = np.linspace(np.min(train[['price']].values),
-                np.max(train[['price']].values),len(vals)) + np.diff(indx)
+                np.max(train[['price']].values),len(y)) + np.diff(indx)
 X = X.reshape(-1,1)
 
 y = y.flatten()/np.max(y)
@@ -58,7 +58,7 @@ kml = kernelml.KernelML(
          parameter_transform_fcn=None,
          batch_size=None)
 
-parameter_by_run = kml.optimize(X,y,loss_function=loss_function,
+parameter_by_run = kml.optimize(X,y,loss_function=distribution_loss,
                                 num_param=3,
                                 args=[],
                                 runs=runs,
