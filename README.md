@@ -1,8 +1,12 @@
 # Kernel Machine Learning 
 
-Project Status: Beta
+Project Status: Stable
 
 Current Version: 2.554
+
+## About 
+
+KernelML is brute force optimizer that can be used to train machine learning models. The package uses a combination of a machine learning and monte carlo simulations to optimize a parameter vector with a user-defined loss function. KernelML doesn’t try to compete TensorFlow in computing the derivatives of non-linear activation functions. KernelML differs from PyTorch in a major way: it doesn’t really model the distribution for each parameter. KernelML samples the parameter space for a loss function around a global or local minima that can be used to form weak confidence intervals.
 
 ## Table of contents
 1. [Installation](#installation)
