@@ -2,7 +2,7 @@
 
 Project Status: Stable
 
-Current Version: 2.556
+Current Version: 2.557
 
 ## About 
 
@@ -157,8 +157,8 @@ kml = kernelml.KernelML(prior_sampler_fcn=None,
 
 
 ```python
-# Begins the optimization process, returns a list of parameters by run
-parameters_by_run = kml.optimize(self,X,y,loss_function,num_param,args=[],
+# Begins the optimization process, returns (list of parameters by run),(list of losses by run)
+parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,args=[],
                                     runs=1,
                                     total_iterations=100,
                                     n_parameter_updates=100,
