@@ -122,15 +122,15 @@ def ridge_least_sqs_loss(x,y,w):
 
 ### Parameter Tuning "Black Magic Approach" <a name="tuning"></a>
 
-Here is a potential strategy  for training a complex parameter networks with KernelML: 1) find a decent number of parameters to analyze 2) make the update magnitude relatively small 3) train the model on a random subsections of the data 4) rerun the optimizer using the best parameters of the previous run as the priors of the current run 5) set the number of iterations per run to a low number. 6) reduced the number of parameters tuned each iteration.
+There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the bias variance trade of the optimizer. 
 
 ![](https://user-images.githubusercontent.com/21232362/41822704-0c80cbb0-77c2-11e8-9460-4aba5660d338.png)
 
 **KernelML Optimization Parameters:**
-1) sequential_update (whether the parameters are updated in order)
-2) update_magnitude (bias added to the parameter updates)
-3) analyze_n_parameters (variance added to the inference engine)
-4) n_parameter_updates (how many updates to perform per iteration)
+**1) sequential_update** (whether the parameters are updated in order)
+**2) update_magnitude** (bias added to the parameter updates)
+**3) analyze_n_parameters** (variance added to the inference engine)
+**4) n_parameter_updates** (how many updates to perform per iteration)
 5) percent_of_params_updated (the percentage of parameters updated)
 6) zscore (the convergence parameter)
 7) total_iterations (number of iterations)
@@ -138,7 +138,12 @@ Here is a potential strategy  for training a complex parameter networks with Ker
 
 ![](https://user-images.githubusercontent.com/21232362/41566301-ee0d4a20-7328-11e8-94a4-6922c661d40d.png)
 
-The number random samples and the number of parameters to analyze need to be tuned for this approach. The plots above show the loss per parameter update for different values of analyze_n_parameters and a fixed number of random simulations per iteration (6000). The values selected for this parameters were 1000, 500, and 100, shown in the plots from left to right. The middle plot, 500, is smoother than the other two plots. I found that the algorithm performs better when the loss curve is smoother. In general, this parameter, analyze_n_parameters, should be at least equal to the number of parameters in the system. It might be an interest to create an algorithm ontop of kernelml that optimizes for smoothness. These plots can be generate from the optimize function by specifying plot_feedback=True.
+The plots above show the loss per iteration The smoother the loss curve, the better the algorithm is handling the bias variance trad off. If the plot is too jagged, the algorithm is searching 'to wide' and has too much variance. If the loss plot is not decreasing, there is not enough variance.
+
+```
+In general, this parameter, analyze_n_parameters, should be at least equal to the number of parameters in the system. It might be an interest to create an algorithm ontop of kernelml that optimizes for smoothness. These plots can be generate from the optimize function by specifying plot_feedback=True.
+Here is a potential strategy  for training a complex parameter networks with KernelML: 1) find a decent number of parameters to analyze 2) make the update magnitude relatively small 3) train the model on a random subsections of the data 4) rerun the optimizer using the best parameters of the previous run as the priors of the current run 5) set the number of iterations per run to a low number. 6) reduced the number of parameters tuned each iteration.
+```
 
 ## Methods <a name="methods"></a>
 
