@@ -128,13 +128,20 @@ There are many potential strategies for choosing optimization parameters. Howeve
 
 **KernelML Optimization Parameters:**
 **1) sequential_update** (whether the parameters are updated in order)
+
 **2) update_magnitude** (bias added to the parameter updates)
+
 **3) analyze_n_parameters** (variance added to the inference engine)
+
 **4) n_parameter_updates** (how many updates to perform per iteration)
-5) percent_of_params_updated (the percentage of parameters updated)
-6) zscore (the convergence parameter)
-7) total_iterations (number of iterations)
-8) runs (number of restarts)
+
+**5) percent_of_params_updated** (the percentage of parameters updated)
+
+**6) zscore** (the convergence parameter)
+
+**7) total_iterations** (number of iterations)
+
+**8) runs** (number of restarts)
 
 ![](https://user-images.githubusercontent.com/21232362/41566301-ee0d4a20-7328-11e8-94a4-6922c661d40d.png)
 
