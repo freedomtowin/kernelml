@@ -237,8 +237,7 @@ The default random sampling functions for the prior and posterior distributions 
 
 ```python
     #inital parameter sampler (default)
-    def prior_sampler_uniform_distribution(weights,num_samples):
-        num_param = weights.shape[0]
+    def prior_sampler_uniform_distribution(weights,num_param,num_samples):
         return np.random.uniform(low=self.low,high=self.high,size=(num_param,num_samples))
 
     #multivariate normal sampler (default)
@@ -256,9 +255,8 @@ The default random sampling functions for the prior and posterior distributions 
             print(best,np.where(error_by_iter==np.min(error_by_iter)))
             
     #intermediate sampler
-    def intermediate_uniform_distribution(weights,num_samples):
+    def intermediate_uniform_distribution(weights,num_param,num_samples):
         result = []
-        num_param = weights.shape[0]
         for i in range(num_param):
             x = np.random.uniform(weights[i]-0.1*weights[i],weights[i]+0.1*weights[i],size=(1,num_samples)).T
             result.append(x)
