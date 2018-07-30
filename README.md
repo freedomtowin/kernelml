@@ -157,6 +157,8 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
                                     runs=1,
                                     total_iterations=100,
                                     n_parameter_updates=100,
+                                    bias=1,
+                                    variance=1,
                                     analyze_n_parameters=20,
                                     update_magnitude=100,
                                     sequential_update=True,
@@ -174,20 +176,34 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
 * **loss_function:** f(x,y,w), outputs loss
 * **num_param:** number of parameters in the loss function
 * **arg:** list of extra data to be passed to the loss function
+
+### Iteration Parameters
 * **runs:** number of runs
 * **total_iterations:** number of iterations (+bias)
-* **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
+
+### Learning Rate Parameters
+The optimizer's parameters can be automatically adjusted by adjusting the bias and variance parameters. 
+* **bias:**
+* **variance:**
+
+### Automatically adjusted parameters
+* **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
+* **init_random_sample_num:** the number of initial simulated parameters (+bias)
+* **random_sample_num:** the number of intermediate simulated parameters (+bias)
+
+### Optinal Parameters
 * **sequential_update:** controls whether the parameters are updated sequentially or randomly
 * **percent_of_params_updated:** the percentage of parameters updated every iteration 
 * **convergence_z_score:** the z score -  defines when the algorithm converges
-* **init_random_sample_num:** the number of initial simulated parameters (+bias)
-* **random_sample_num:** the number of intermediate simulated parameters (+bias)
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
 * **prior_uniform_high:** default pior random sampler - uniform distribution - high
 * **plot_feedback:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
+
+
+
 
 ### Access Model Parameters and Losses <a name="accessmodel"></a>
 
