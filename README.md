@@ -130,11 +130,6 @@ There are many potential strategies for choosing optimization parameters. Howeve
 
 The plots above show the loss per iteration The smoother the loss curve, the better the algorithm is handling the bias variance trad off. If the plot is too jagged, the algorithm is searching 'to wide' and has too much variance. If the loss plot is not decreasing, there is not enough variance.
 
-```
-In general, this parameter, analyze_n_parameters, should be at least equal to the number of parameters in the system. It might be an interest to create an algorithm ontop of kernelml that optimizes for smoothness. These plots can be generate from the optimize function by specifying plot_feedback=True.
-Here is a potential strategy  for training a complex parameter networks with KernelML: 1) find a decent number of parameters to analyze 2) make the update magnitude relatively small 3) train the model on a random subsections of the data 4) rerun the optimizer using the best parameters of the previous run as the priors of the current run 5) set the number of iterations per run to a low number. 6) reduced the number of parameters tuned each iteration.
-```
-
 ## Methods <a name="methods"></a>
 
 ```python
@@ -183,9 +178,9 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 
 ### Learning Rate Parameters
-The optimizer's parameters can be automatically adjusted by adjusting the bias and variance parameters. 
-* **bias:**
-* **variance:**
+The optimizer's parameters can be automatically adjusted by adjusting the bias and variance parameters.
+* **bias:** increases the optimizer's bias, constraints: bias>1, int(bias)==bi
+* **variance:** increases the optimizer's variance, constraints: variance < 10(bias), int(variance)==variance
 
 ### Automatically adjusted parameters
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
