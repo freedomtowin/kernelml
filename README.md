@@ -124,7 +124,7 @@ def ridge_least_sqs_loss(x,y,w):
 
 There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the bias variance trade of the optimizer. 
 
-![](https://user-images.githubusercontent.com/21232362/41822704-0c80cbb0-77c2-11e8-9460-4aba5660d338.png | width=250)
+![](https://user-images.githubusercontent.com/21232362/41822704-0c80cbb0-77c2-11e8-9460-4aba5660d338.png =250x250)
 
 ![](https://user-images.githubusercontent.com/21232362/41566301-ee0d4a20-7328-11e8-94a4-6922c661d40d.png)
 
