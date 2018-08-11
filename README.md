@@ -151,6 +151,7 @@ kml = kernelml.KernelML(prior_sampler_fcn=None,
 ```python
 # Begins the optimization process, returns (list of parameters by run),(list of losses by run)
 parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,args=[],
+                                    kml_model=None,
                                     runs=1,
                                     total_iterations=100,
                                     n_parameter_updates=100,
@@ -173,6 +174,7 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
 * **loss_function:** f(x,y,w), outputs loss
 * **num_param:** number of parameters in the loss function
 * **arg:** list of extra data to be passed to the loss function
+* **kml_model:** transfer learn weight from another kml.model
 
 ### Iteration Parameters
 * **runs:** number of runs
