@@ -35,16 +35,18 @@ X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 
-runs = 2
+runs = 3
 zscore = 2.0
 umagnitude = 1
-analyzenparam = 10
+analyzenparam = 5
 nupdates = 5
 npriorsamples=100
 nrandomsamples = 100
 tinterations = 10
 sequpdate = False
 
+bias = 400/4
+variance = 350/4
 
 kml = kernelml.KernelML(
          prior_sampler_fcn=None,
@@ -59,18 +61,13 @@ parameter_by_run = kml.optimize(X_train,y_train,loss_function=poly_least_sqs_los
                                 args=[],
                                 runs=runs,
                                 total_iterations=tinterations,
-                                analyze_n_parameters=analyzenparam,
-                                n_parameter_updates=nupdates,
-                                update_magnitude=umagnitude,
-                                sequential_update=sequpdate,
-                                percent_of_params_updated=1,
-                                init_random_sample_num=npriorsamples,
-                                random_sample_num=nrandomsamples,
+                                bias = bias,
+                                variance = variance,
                                 convergence_z_score=zscore,
                                 prior_uniform_low=0,
                                 prior_uniform_high=2,
                                 plot_feedback=False,
-                                print_feedback=False)
+                                print_feedback=True)
 
 
 
