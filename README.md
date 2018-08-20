@@ -2,11 +2,11 @@
 
 Project Status: Beta
 
-Current Version: 2.563
+Current Version: 2.565
 
 ## About 
 
-KernelML is brute force optimizer that can be used to train machine learning models. The package uses a combination of a machine learning and monte carlo simulations to optimize a parameter vector with a user-defined loss function.
+KernelML is brute force optimizer that can be used to train machine learning models. The package uses a combination of a neuroevolution algorithms, heuristics, and monte carlo simulations to optimize a parameter vector with a user-defined loss function.
 
 ## Table of contents
 1. [Installation](#installation)
@@ -159,8 +159,6 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
                                     variance=1,
                                     analyze_n_parameters=20,
                                     update_magnitude=100,
-                                    sequential_update=True,
-                                    percent_of_params_updated=1,
                                     convergence_z_score=1,
                                     init_random_sample_num=1000,
                                     random_sample_num=100,
@@ -193,8 +191,6 @@ The optimizer's parameters can be automatically adjusted by adjusting the bias a
 * **random_sample_num:** the number of intermediate simulated parameters (+bias)
 
 ### Optinal Parameters
-* **sequential_update:** controls whether the parameters are updated sequentially or randomly
-* **percent_of_params_updated:** the percentage of parameters updated every iteration 
 * **convergence_z_score:** the z score -  defines when the algorithm converges
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
 * **prior_uniform_high:** default pior random sampler - uniform distribution - high
