@@ -1,4 +1,5 @@
 #sorry for the messy code in advance
+import numpy
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -6,6 +7,7 @@ import scipy.stats as stats
 from sklearn import linear_model
 import time
 import kernelml
+import scipy
 #Seaborn scatter plot error?
 import matplotlib as mpl
 mpl.style.use('default')
@@ -120,16 +122,19 @@ def loss_function(x,y,w):
 #low the number of parameter update and rely more on the simulation
 #analyze more parameters to add variance to the updates
 #update parameters in random order
-runs = 1
+runs = 4
 zscore = 2.0
 umagnitude = 1
-analyzenparam = 50
-nupdates = 10
+analyzenparam = 30
+nupdates = 3
 npriorsamples=100
 nrandomsamples = 100
-tinterations = 10
+tinterations = 5
 percentupdated=1
 sequpdate = False
+
+bias = 200/12
+variance = 150/12
 
 kml = kernelml.KernelML(
          prior_sampler_fcn=None,
@@ -139,24 +144,20 @@ kml = kernelml.KernelML(
          parameter_transform_fcn=None,
          batch_size=None)
 
-kml.use_ipyparallel(dview)
+# kml.use_ipyparallel(dview)
 parameter_by_run = kml.optimize(X,y,loss_function=loss_function,
                                 num_param=12,
                                 args=[],
                                 runs=runs,
                                 total_iterations=tinterations,
-                                analyze_n_parameters=analyzenparam,
                                 n_parameter_updates=nupdates,
-                                update_magnitude=umagnitude,
-                                sequential_update=sequpdate,
-                                percent_of_params_updated=percentupdated,
-                                init_random_sample_num=npriorsamples,
-                                random_sample_num=nrandomsamples,
+                                bias = bias,
+                                variance = variance,
                                 convergence_z_score=zscore,
                                 prior_uniform_low=0.1,
                                 prior_uniform_high=2.5,
                                 plot_feedback=False,
-                                print_feedback=False)
+                                print_feedback=True)
 
 
 def generate_pdfs(x,y,w):
@@ -198,7 +199,8 @@ df = df.merge(G,on=['c0','c1'])
 plt.figure(figsize=(10,10))
 plt.scatter([x[0] for x in d], [y[1] for y in d])
 for i in df['index'].unique():
+
+
     clust = df[[0,1,'index']][df['index']==i]
     plt.scatter([x[0] for x in clust[[0]].values], [y[0] for y in clust[[1]].values])
 plt.show()
-
