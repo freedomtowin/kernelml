@@ -31,13 +31,12 @@ SST_test = np.sum((y_test-np.mean(y_test))**2)
 X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
-runs = 2
+runs = 3
 zscore = 2.0
-umagnitude = 0.01
-analyzenparam = 100
-nupdates = 50
-npriorsamples=40
-nrandomsamples = 600
+bias = 500/5
+variance = 400/5
+analyzenparam = 10
+nupdates = 5
 tinterations = 10
 sequpdate = False
 
@@ -46,6 +45,7 @@ kml = kernelml.KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
+         mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
          batch_size=None)
 
@@ -53,26 +53,19 @@ parameter_by_run = kml.optimize(X_train,y_train,loss_function=ridge_least_sqs_lo
                                 num_param=5,
                                 args=[],
                                 runs=runs,
+                                bias = bias,
+                                variance = variance,
                                 total_iterations=tinterations,
-                                analyze_n_parameters=analyzenparam,
                                 n_parameter_updates=nupdates,
-                                update_magnitude=umagnitude,
-                                sequential_update=sequpdate,
-                                percent_of_params_updated=1,
-                                init_random_sample_num=npriorsamples,
-                                random_sample_num=nrandomsamples,
-                                convergence_z_score=1,
+                                convergence_z_score=zscore,
                                 prior_uniform_low=1,
                                 prior_uniform_high=2,
                                 plot_feedback=False,
-                                print_feedback=False)
+                                print_feedback=True)
 
 #Get model performance on validation data
-params = kml.model.get_param_by_iter()
-errors = kml.model.get_loss_by_iter()
-update_history = kml.model.get_parameter_update_history()
-w = params[np.where(errors==np.min(errors))].T
-alpha,w = w[-1][0],w[:-1]
+w = kml.model.get_best_param()
+alpha,w = w[-1],w[:-1].reshape(-1,1)
 print('alpha:',alpha)
 print('w:',w)
 
