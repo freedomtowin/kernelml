@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.565
+Current Version: 2.566
 
 ## About 
 
