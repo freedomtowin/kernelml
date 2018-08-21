@@ -12,8 +12,8 @@ test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'wate
 
 #sample parameters from distribution
 #the mean of X seems like a reasonable center for the distribution params
-def prior_sampler_custom(weights,num_param):
-    w = np.random.uniform(np.mean(X),1,size=(num_param,1000))
+def prior_sampler_custom(weights,num_param,random_sample):
+    w = np.random.uniform(np.mean(X),1,size=(num_param,random_sample))
     return w 
 
 def liklihood_loss(x,y,w):
@@ -50,7 +50,7 @@ tinterations = 10
 sequpdate = False
 
 
-kml = kernelml.KernelML(
+kml = KernelML(
          prior_sampler_fcn=prior_sampler_custom,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
@@ -58,7 +58,7 @@ kml = kernelml.KernelML(
          parameter_transform_fcn=None,
          batch_size=None)
 
-parameter_by_run = kml.optimize(X,y,loss_function=distribution_loss,
+parameter_by_run,loss_by_run = kml.optimize(X,y,loss_function=distribution_loss,
                                 num_param=3,
                                 args=[],
                                 runs=runs,
@@ -66,15 +66,13 @@ parameter_by_run = kml.optimize(X,y,loss_function=distribution_loss,
                                 analyze_n_parameters=analyzenparam,
                                 n_parameter_updates=nupdates,
                                 update_magnitude=umagnitude,
-                                sequential_update=sequpdate,
-                                percent_of_params_updated=1,
                                 init_random_sample_num=npriorsamples,
                                 random_sample_num=nrandomsamples,
                                 convergence_z_score=zscore,
                                 prior_uniform_low=1,
                                 prior_uniform_high=2,
                                 plot_feedback=False,
-                                print_feedback=False)
+                                print_feedback=True)
 
 
 w = parameter_by_run[-1]
@@ -82,3 +80,4 @@ mean1,std1,scale1 = w[0],w[1],w[2]
 plt.stem(X, scale1*stats.norm.pdf(X,mean1,std1),'r', lw=5, alpha=0.6, label='normal pdf')
 plt.plot(X,y)
 plt.show()
+
