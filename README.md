@@ -180,9 +180,10 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
 * **n_parameter_updates:** the number of parameter updates per iteration (+bias)
 
 ### Learning Rate Parameters
-The optimizer's parameters can be automatically adjusted by adjusting the bias and variance parameters.
-* **bias:** increases the optimizer's bias, constraints: bias>1, int(bias)==bi
-* **variance:** increases the optimizer's variance, constraints: variance < 10(bias), int(variance)==variance
+The optimizer's parameters can be automatically adjusted by adjusting the following parameters:
+* **simulation_factor:** increases the (coefficient) population size
+* **mutate_factor:** increases the amount of coefficient augmentation, increases the search magnitude
+* **breed_factor:** increases the combination of coefficient sets, searches the subspace of simulated coefficients
 
 ### Automatically adjusted parameters
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
