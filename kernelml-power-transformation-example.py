@@ -14,7 +14,7 @@ def poly_function(x,w):
     return hypothesis
     
 def poly_least_sqs_loss(x,y,w):
-    import numpy as np
+    np=numpy
     def poly_function(x,w):
         hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
         return hypothesis
@@ -39,16 +39,17 @@ runs = 3
 zscore = 2.0
 umagnitude = 1
 analyzenparam = 5
-nupdates = 5
+nupdates = 3
 npriorsamples=100
 nrandomsamples = 100
 tinterations = 10
 sequpdate = False
 
-bias = 400/4
-variance = 350/4
 
-kml = kernelml.KernelML(
+
+kml.use_ipyparallel(dview)
+
+kml = KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
@@ -56,13 +57,19 @@ kml = kernelml.KernelML(
          parameter_transform_fcn=None,
          batch_size=None)
 
+
+simulation_factor = 100
+mutation_factor = 10
+breed_factor= 10
+
 parameter_by_run = kml.optimize(X_train,y_train,loss_function=poly_least_sqs_loss,
                                 num_param=4,
                                 args=[],
-                                runs=runs,
+                                runs=runs,n_parameter_updates=5,
                                 total_iterations=tinterations,
-                                bias = bias,
-                                variance = variance,
+                                simulation_factor = simulation_factor,
+                                mutation_factor = mutation_factor,
+                                breed_factor = breed_factor,
                                 convergence_z_score=zscore,
                                 prior_uniform_low=0,
                                 prior_uniform_high=2,
