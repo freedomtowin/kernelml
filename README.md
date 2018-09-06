@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.566
+Current Version: 2.571
 
 ## About 
 
@@ -120,17 +120,17 @@ def ridge_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
 ```
 
-### Parameter Tuning "Black Magic Approach" <a name="tuning"></a>
+### Parameter Tuning "Rules of Thumb" <a name="tuning"></a>
 
-There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the bias variance trade of the optimizer. 
+There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the simulation_factor, mutation_factor, and breed_factor.
 
 
 <img src="https://user-images.githubusercontent.com/21232362/41822704-0c80cbb0-77c2-11e8-9460-4aba5660d338.png" alt="alt text" width="350" height="350" class="left">
 
+1. The mutation factor should be inversely proportional to the simulation factor * the number of parameters. The more data points and the less parameters, the more likely that large mutations will not be successful.
+2. 
 
-![](https://user-images.githubusercontent.com/21232362/41566301-ee0d4a20-7328-11e8-94a4-6922c661d40d.png)
 
-The plots above show the loss per iteration The smoother the loss curve, the better the algorithm is handling the bias variance trad off. If the plot is too jagged, the algorithm is searching 'to wide' and has too much variance. If the loss plot is not decreasing, there is not enough variance.
 
 ## Methods <a name="methods"></a>
 
