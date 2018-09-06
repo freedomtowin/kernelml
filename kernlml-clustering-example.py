@@ -126,17 +126,17 @@ runs = 4
 zscore = 2.0
 umagnitude = 1
 analyzenparam = 30
-nupdates = 3
+nupdates = 2
 npriorsamples=100
 nrandomsamples = 100
 tinterations = 5
-percentupdated=1
-sequpdate = False
 
-bias = 200/12
-variance = 150/12
 
-kml = kernelml.KernelML(
+simulation_factor = 30
+mutation_factor = 10
+breed_factor=5
+
+kml = KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=sampler_custom,
          intermediate_sampler_fcn=None,
@@ -144,15 +144,15 @@ kml = kernelml.KernelML(
          parameter_transform_fcn=None,
          batch_size=None)
 
-# kml.use_ipyparallel(dview)
 parameter_by_run = kml.optimize(X,y,loss_function=loss_function,
                                 num_param=12,
                                 args=[],
                                 runs=runs,
                                 total_iterations=tinterations,
                                 n_parameter_updates=nupdates,
-                                bias = bias,
-                                variance = variance,
+                                simulation_factor = simulation_factor,
+                                mutation_factor = mutation_factor,
+                                breed_factor = breed_factor,
                                 convergence_z_score=zscore,
                                 prior_uniform_low=0.1,
                                 prior_uniform_high=2.5,
