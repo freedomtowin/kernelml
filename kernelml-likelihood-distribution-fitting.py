@@ -40,14 +40,12 @@ y = y.reshape(-1,1)
 
 
 runs = 2
-zscore = 2.0
-umagnitude = 1
-analyzenparam = 30
-nupdates = 5
-npriorsamples=1000
-nrandomsamples = 100
 tinterations = 10
-sequpdate = False
+nupdates = 5
+
+simulation_factor = 100
+mutation_factor = 1
+breed_factor = 0
 
 
 kml = KernelML(
@@ -63,12 +61,10 @@ parameter_by_run,loss_by_run = kml.optimize(X,y,loss_function=distribution_loss,
                                 args=[],
                                 runs=runs,
                                 total_iterations=tinterations,
-                                analyze_n_parameters=analyzenparam,
                                 n_parameter_updates=nupdates,
-                                update_magnitude=umagnitude,
-                                init_random_sample_num=npriorsamples,
-                                random_sample_num=nrandomsamples,
-                                convergence_z_score=zscore,
+                                simulation_factor = simulation_factor,
+                                mutation_factor = mutation_factor,
+                                breed_factor = breed_factor,
                                 prior_uniform_low=1,
                                 prior_uniform_high=2,
                                 plot_feedback=False,
