@@ -45,8 +45,9 @@ y = train[["haversine"]].values
 runs = 3
 titerations = 5
 nupdates = 2
-bias = 200/2
-variance = 150/2
+simulation_factor = 100
+mutation_factor = 1
+breed_factor = 0
 
 kml = kernelml.KernelML(
          prior_sampler_fcn=None,
@@ -62,9 +63,9 @@ parameter_by_run = kml.optimize(X,y,loss_function=euclid_dist_to_centroid,
                                 runs=runs,
                                 total_iterations=titerations,
                                 n_parameter_updates=nupdates,
-                                bias = bias,
-                                variance = variance,
-                                convergence_z_score=zscore,
+                                simulation_factor = simulation_factor,
+                                mutation_factor = mutation_factor,
+                                breed_factor = breed_factor,
                                 prior_uniform_low=-1,
                                 prior_uniform_high=1,
                                 plot_feedback=False,
@@ -80,3 +81,6 @@ SST = np.sum((y-np.mean(y))**2)
 params = kml.model.get_param_by_iter()
 errors = kml.model.get_loss_by_iter()
 update_history = kml.model.get_parameter_update_history()
+
+#R-squared by iteration
+1 - errors/SST
