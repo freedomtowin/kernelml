@@ -9,7 +9,6 @@ import kernelml
 train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
-
 full = pd.concat([train[['price','date']],test[['price','date']]])
 full.sort_values(by='date',inplace=True)
 full=full.groupby('date').count()
@@ -31,7 +30,7 @@ plt.title("average housing prices by date - valid data")
 plt.show()
 
 def sin_non_linear_model(x,w):
-    return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
+    return w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1])*w[2] + np.sin(x[:,1:2]*w[1])*w[3]
 
 def sin_mean_loss(x,y,w):
     hypothesis = sin_non_linear_model(x,w)
@@ -46,53 +45,54 @@ def mini_batch_random_window(X,y,batch_size):
     y_batch = y[center-W:center+W]
     return X_batch,y_batch
 
-#set the convergence score to a low value
-#make the update magnitude large for more variance and quicker convergence
-#make the number of updates large to find potentially unique solutions
-#sample 1000 parameters because the function is complex
-
-runs = 1
+runs = 10
 zscore = 0.5
-umagnitude = 1000
-analyzenparam = 100
-nupdates = 100
-npriorsamples=1000
-nrandomsamples = 1000
-tinterations = 100
+
+tinterations = 10
+nupdates = 5
 sequpdate = True
 
 
-kml = kernelml.KernelML(
+kml = KernelML(
          prior_sampler_fcn=None,
          sampler_fcn=None,
          intermediate_sampler_fcn=None,
          mini_batch_sampler_fcn=mini_batch_random_window,
          parameter_transform_fcn=None,
-         batch_size=200)
+         batch_size=int(X_train.shape[0]*0.8))
+
+
+simulation_factor = 1000
+mutation_factor = 1
+breed_factor = 3
 
 X_train = ts_train[['i']].values
 y_train = ts_train[["price"]].values
 
 X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 
-parameter_by_run = kml.optimize(X_train,y_train,loss_function=sin_mean_loss,
+parameter_by_run,loss_by_run = kml.optimize(X_train,y_train,loss_function=sin_mean_loss,
                                 num_param=4,
                                 args=[],
                                 runs=runs,
                                 total_iterations=tinterations,
-                                analyze_n_parameters=analyzenparam,
                                 n_parameter_updates=nupdates,
-                                update_magnitude=umagnitude,
-                                sequential_update=sequpdate,
-                                percent_of_params_updated=1,
-                                init_random_sample_num=npriorsamples,
-                                random_sample_num=nrandomsamples,
+                                simulation_factor=simulation_factor,
+                                mutation_factor=mutation_factor,
+                                breed_factor=breed_factor,
                                 convergence_z_score=zscore,
-                                prior_uniform_low=-1,
-                                prior_uniform_high=1,
+                                prior_uniform_low=-0.001,
+                                prior_uniform_high=0.001,
                                 plot_feedback=False,
-                                print_feedback=False)
+                                print_feedback=True)
 
+
+
+plt.plot(parameter_by_run)
+plt.show()
+
+plt.plot(loss_by_run)
+plt.show()
 
 ### Ensemble Model
 
@@ -109,9 +109,21 @@ X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 params = kml.model.get_param_by_iter()
 errors = kml.model.get_loss_by_iter()
 
+def get_rsq(y,yp):
+    return 1-np.sum((yp-y)**2)/np.sum((np.mean(y)-y)**2)
+
 #Create ensemble of features
-feature_num = 5
+feature_num = 10
 best_w_arr = errors.argsort()[:feature_num]
+
+w = np.mean(parameter_by_run[-10:],axis=0)
+
+plt.plot(sin_non_linear_model(X_test,w).flatten())
+plt.plot(y_test)
+plt.show()
+
+print(get_rsq(y_test.flatten(),sin_non_linear_model(X_test,w).flatten()))
+
 predicted_output_as_feature_train = np.zeros((X_train.shape[0],feature_num))
 predicted_output_as_feature_test = np.zeros((X_test.shape[0],feature_num))
 
@@ -122,18 +134,6 @@ for w in params[best_w_arr,:]:
     predicted_output_as_feature_test[:,i] = sin_non_linear_model(X_test,w).flatten()
     i+=1
 
-linreg = linear_model.Ridge()
-linreg.fit(predicted_output_as_feature_train,y_train)
-print('train score:',linreg.score(predicted_output_as_feature_train,y_train))
-
-plt.plot(linreg.predict(predicted_output_as_feature_train))
-plt.plot(y_train)
-plt.title("average housing prices by date - train data")
-plt.show()
-
-plt.plot(linreg.predict(predicted_output_as_feature_test))
+plt.plot(np.mean(predicted_output_as_feature_test,axis=1))
 plt.plot(y_test)
-plt.title("average housing prices by date - valid data")
 plt.show()
-
-print('validation rsquared:',linreg.score(predicted_output_as_feature_test,y_test))
