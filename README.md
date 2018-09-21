@@ -123,13 +123,7 @@ def ridge_least_sqs_loss(x,y,w):
 
 ### Parameter Tuning "Rules of Thumb" <a name="tuning"></a>
 
-There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the simulation_factor, mutation_factor, and breed_factor.
-
-
-<img src="https://user-images.githubusercontent.com/21232362/41822704-0c80cbb0-77c2-11e8-9460-4aba5660d338.png" alt="alt text" width="350" height="350" class="left">
-
-1. The mutation factor should be inversely proportional to the simulation factor * the number of parameters. The more data points and the less parameters, the more likely that large mutations will not be successful.
-2. 
+There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the number_of_random_simulations, update_volume, and update_volatility.
 
 
 
