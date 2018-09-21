@@ -154,22 +154,26 @@ kml = kernelml.KernelML(prior_sampler_fcn=None,
 
 ```python
 # Begins the optimization process, returns (list of parameters by run),(list of losses by run)
-parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,args=[],
-                                    kml_model=None,
-                                    runs=1,
-                                    total_iterations=100,
-                                    n_parameter_updates=100,
-                                    bias=1,
-                                    variance=1,
-                                    analyze_n_parameters=20,
-                                    update_magnitude=100,
-                                    convergence_z_score=1,
-                                    init_random_sample_num=1000,
-                                    random_sample_num=100,
-                                    prior_uniform_low=-1,
-                                    prior_uniform_high=1,
-                                    plot_feedback=False,
-                                    print_feedback=False)
+parameters_by_run,loss_by_run = kml.optimize(   X,
+                                                y,
+                                                loss_function,
+                                                num_param,
+                                                args=[],
+                                                kmldata=None,
+                                                number_of_realizations=1,
+                                                number_of_cycles=20,
+                                                update_volume=10,
+                                                number_of_random_simulations = 1000,
+                                                update_volatility = 1,
+                                                convergence_z_score=1,
+                                                analyze_n_parameters=None,
+                                                update_magnitude=None,
+                                                prior_random_samples=None,
+                                                posterior_random_samples=None,
+                                                prior_uniform_low=-1,
+                                                prior_uniform_high=1,
+                                                plot_feedback=False,
+                                                print_feedback=True)
 ```
 * **X:** input matrix
 * **y:** output vector
@@ -179,24 +183,23 @@ parameters_by_run,loss_by_run = kml.optimize(self,X,y,loss_function,num_param,ar
 * **kml_model:** transfer learn weight from another kml.model
 
 ### Iteration Parameters
-* **runs:** number of runs
-* **total_iterations:** number of iterations (+bias)
-* **n_parameter_updates:** the number of parameter updates per iteration (+bias)
+* **number_of_realizations:** number of runs
+* **number_of_cycles:** number of iterations (+bias)
+* **update_volume:** the volume of attempted parameter updates (+bias)
 
 ### Learning Rate Parameters
 The optimizer's parameters can be automatically adjusted by adjusting the following parameters:
-* **simulation_factor:** increases the (coefficient) population size
-* **mutate_factor:** increases the amount of coefficient augmentation, increases the search magnitude
-* **breed_factor:** increases the combination of coefficient sets, searches the subspace of simulated coefficients
+* **number_of_random_simulations:** increases the (coefficient) population size
+* **update_volatility:** increases the amount of coefficient augmentation, increases the search magnitude
 
 ### Automatically adjusted parameters
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
-* **init_random_sample_num:** the number of initial simulated parameters (+bias)
-* **random_sample_num:** the number of intermediate simulated parameters (+bias)
+* **prior_random_sample_num:** the number of initial simulated parameters (+bias)
+* **posterior_random_sample_num:** the number of intermediate simulated parameters (+bias)
 
 ### Optinal Parameters
-* **convergence_z_score:** the z score -  defines when the algorithm converges
+* **convergence_z_score:** the threshold from when a particular realization has converged
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
 * **prior_uniform_high:** default pior random sampler - uniform distribution - high
 * **plot_feedback:** provides real-time plots of parameters and losses
@@ -268,31 +271,31 @@ The default random sampling functions for the prior and posterior distributions 
 
 ```python
     #inital parameter sampler (default)
-    def prior_sampler_uniform_distribution(weights,num_param,num_samples):
-        return np.random.uniform(low=self.low,high=self.high,size=(num_param,num_samples))
+    def prior_sampler_uniform_distribution(self,kmldata):
+        random_samples = kmldata.prior_random_samples
+        num_params = kmldata.number_of_parameters
+        return np.random.uniform(low=self.low,high=self.high,size=(num_params,
+                                                                   random_samples))
 
     #multivariate normal sampler (default)
-    def sampler_multivariate_normal_distribution(best_param,
-                                                param_by_iter,
-                                                error_by_iter,
-                                                parameter_update_history,
-                                                random_sample_num=100):
-        covariance = np.diag(np.var(parameter_update_history[:,:],axis=1))
-        best = param_by_iter[np.where(error_by_iter==np.min(error_by_iter))[0]]
+    def sampler_multivariate_normal_distribution(self,kmldata):
+        var = np.diag(np.var(kmldata.update_history[:,:],axis=1))
+        best = kmldata.update_by_iteration[np.where(kmldata.loss_by_iteration==np.min(kmldata.loss_by_iteration))[0]]
+        if best.shape[0]>1:
+            best = best[0]
         mean = best.flatten()
-        try:
-            return np.random.multivariate_normal(mean, covariance, (random_sample_num)).T
-        except:
-            print(best,np.where(error_by_iter==np.min(error_by_iter)))
+        return np.random.multivariate_normal(mean, var, (kmldata.posterior_random_samples)).T
+            
             
     #intermediate sampler
-    def intermediate_uniform_distribution(weights,num_param,num_samples):
-        result = []
-        for i in range(num_param):
-            x = np.random.uniform(weights[i]-0.1*weights[i],weights[i]+0.1*weights[i],size=(1,num_samples)).T
-            result.append(x)
-        result = np.squeeze(np.array(result))
-        return result         
+    def intermediate_uniform_distribution(self,kmldata):
+
+        random_samples = kmldata.prior_random_samples
+        variances = np.var(kmldata.update_history[:,:],axis=1).flatten()
+        means = kmldata.update_history[:,-1].flatten()
+
+        return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/2,mu+np.sqrt(sigma*12)/2,(random_samples)) for sigma,mu in zip(variances,means)])
+        
         
     #mini batch random choice sampler
     def mini_batch_random_choice(X,y,batch_size):
