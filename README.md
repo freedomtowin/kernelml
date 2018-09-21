@@ -18,6 +18,7 @@ KernelML is brute force optimizer that can be used to train machine learning mod
     5. [Enhanced Ridge Regression](#ridge)
     5. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
+    1. [](#initialization)
     1. [Access Model Parameters/Losses](#accessmodel)
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
@@ -134,6 +135,9 @@ There are many potential strategies for choosing optimization parameters. Howeve
 
 ## Methods <a name="methods"></a>
 
+
+### KernelML <a name="intialization"></a>
+
 ```python
 kml = kernelml.KernelML(prior_sampler_fcn=None,
                  sampler_fcn=None,
@@ -199,7 +203,22 @@ The optimizer's parameters can be automatically adjusted by adjusting the follow
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
 
+### kmldata <a name="intialization"></a>
 
+A KmlData class is primarily used to pass relevant information to the sampler functions.
+
+### Data
+* **KernelML().kmldata.current_weights:** 
+* **KernelML().kmldata.update_history:** default pior random sampler - uniform distribution - low
+* **KernelML().kmldata.loss_history:** default pior random sampler - uniform distribution - high
+* **KernelML().kmldata.realization_number:** provides real-time plots of parameters and losses
+* **KernelML().kmldata.cycle_number:** real-time feedback of parameters,losses, and convergence
+* **KernelML().kmldata.number_of_parameters:** real-time feedback of parameters,losses, and convergence
+* **KernelML().kmldata.prior_random_samples:** real-time feedback of parameters,losses, and convergence
+* **KernelML().kmldata.posterior_random_samples:** real-time feedback of parameters,losses, and convergence
+* **KernelML().kmldata.number_of_updates:** real-time feedback of parameters,losses, and convergence
+
+        
 
 ### Access Model Parameters and Losses <a name="accessmodel"></a>
 
