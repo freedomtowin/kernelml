@@ -18,8 +18,7 @@ KernelML is brute force optimizer that can be used to train machine learning mod
     5. [Enhanced Ridge Regression](#ridge)
     5. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
-    1. [](#initialization)
-    1. [Access Model Parameters/Losses](#accessmodel)
+    1. [KmlData](#kmldata)
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
     4. [Parameter Transforms](#transforms)
@@ -189,8 +188,8 @@ The optimizer's parameters can be automatically adjusted by adjusting the follow
 ### Automatically adjusted parameters
 * **analyze_n_parameters:** the number of parameters analyzed (+variance)
 * **update_magnitude:** the magnitude of the updates - corresponds to magnitude of loss function (+variance)
-* **prior_random_sample_num:** the number of initial simulated parameters (+bias)
-* **posterior_random_sample_num:** the number of intermediate simulated parameters (+bias)
+* **prior_random_sample_num:** the number of prior simulated parameters (+bias)
+* **posterior_random_sample_num:** the number of posterior simulated parameters (+bias)
 
 ### Optinal Parameters
 * **convergence_z_score:** the threshold from when a particular realization has converged
@@ -200,31 +199,22 @@ The optimizer's parameters can be automatically adjusted by adjusting the follow
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
 
-### kmldata <a name="intialization"></a>
+### kmldata <a name="kmldata"></a>
 
 A KmlData class is primarily used to pass relevant information to the sampler functions.
 
 ### Data
-* **KernelML().kmldata.current_weights:** 
-* **KernelML().kmldata.update_history:** default pior random sampler - uniform distribution - low
-* **KernelML().kmldata.loss_history:** default pior random sampler - uniform distribution - high
-* **KernelML().kmldata.realization_number:** provides real-time plots of parameters and losses
-* **KernelML().kmldata.cycle_number:** real-time feedback of parameters,losses, and convergence
-* **KernelML().kmldata.number_of_parameters:** real-time feedback of parameters,losses, and convergence
-* **KernelML().kmldata.prior_random_samples:** real-time feedback of parameters,losses, and convergence
-* **KernelML().kmldata.posterior_random_samples:** real-time feedback of parameters,losses, and convergence
-* **KernelML().kmldata.number_of_updates:** real-time feedback of parameters,losses, and convergence
+* **KernelML().kmldata.best_weight_vector:** numpy array of the best weights for the current cycle 
+* **KernelML().kmldata.current_weights:** numpy array of simulated weights for the current cycle
+* **KernelML().kmldata.update_history:** numpy array of parameter updates for the current realization - (weight set, update #)
+* **KernelML().kmldata.loss_history:** numpy array of losses for the current realization
+* **KernelML().kmldata.realization_number:** current number of realizations
+* **KernelML().kmldata.cycle_number:** current number of cycles
+* **KernelML().kmldata.number_of_parameters:** number of parameters passed to the loss function
+* **KernelML().kmldata.prior_random_samples:** the number of prior simulated parameters
+* **KernelML().kmldata.posterior_random_samples:** the number of posterior simulated parameters
+* **KernelML().kmldata.number_of_updates:** number of successful parameter updates
 
-        
-
-### Access Model Parameters and Losses <a name="accessmodel"></a>
-
-```python
-params = kml.model.get_param_by_iter()
-errors = kml.model.get_loss_by_iter()
-update_history = kml.model.get_parameter_update_history()
-best_w = kml.model.get_best_param()
-```
 
 ### Parallel Processing with Ipyrallel <a name="accessmodel"></a>
 
@@ -264,31 +254,34 @@ The formula creates a Z-score using the last 10 parameters and the best paramete
 The default random sampling functions for the prior and posterior distributions can be overrided. User defined random sampling function must have the same parameters as the default. Please see the default random sampling functions below. 
 
 ```python
-    #inital parameter sampler (default)
-    def prior_sampler_uniform_distribution(self,kmldata):
+    #prior sampler (default)
+    def prior_sampler_uniform_distribution(kmldata):
         random_samples = kmldata.prior_random_samples
         num_params = kmldata.number_of_parameters
         return np.random.uniform(low=self.low,high=self.high,size=(num_params,
                                                                    random_samples))
 
-    #multivariate normal sampler (default)
-    def sampler_multivariate_normal_distribution(self,kmldata):
-        var = np.diag(np.var(kmldata.update_history[:,:],axis=1))
-        best = kmldata.update_by_iteration[np.where(kmldata.loss_by_iteration==np.min(kmldata.loss_by_iteration))[0]]
-        if best.shape[0]>1:
-            best = best[0]
-        mean = best.flatten()
-        return np.random.multivariate_normal(mean, var, (kmldata.posterior_random_samples)).T
-            
-            
-    #intermediate sampler
-    def intermediate_uniform_distribution(self,kmldata):
-
+    #posterior sampler (default)
+    def posterior_sampler_uniform_distribution(kmldata):
+    
         random_samples = kmldata.prior_random_samples
         variances = np.var(kmldata.update_history[:,:],axis=1).flatten()
-        means = kmldata.update_history[:,-1].flatten()
+        means = kmldata.best_weight_vector.flatten()
 
         return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/2,mu+np.sqrt(sigma*12)/2,(random_samples)) for sigma,mu in zip(variances,means)])
+
+
+            
+            
+    #intermediate sampler (default)
+    def intermediate_sampler_uniform_distribution(kmldata):
+
+            random_samples = kmldata.prior_random_samples
+            variances = np.var(kmldata.update_history[:,:],axis=1).flatten()
+            means = kmldata.update_history[:,-1].flatten()
+
+            return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/4,mu+np.sqrt(sigma*12)/4,(random_samples)) for sigma,mu in zip(variances,means)])
+
         
         
     #mini batch random choice sampler
