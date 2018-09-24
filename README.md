@@ -135,13 +135,13 @@ There are many potential strategies for choosing optimization parameters. Howeve
 
 ```python
 kml = kernelml.KernelML(prior_sampler_fcn=None,
-                 sampler_fcn=None,
+                 posterior_sampler_fcn=None,
                  intermediate_sampler_fcn=None,
                  parameter_transform_fcn=None,
                  batch_size=None)
 ```
 * **prior_sampler_fcn:** the function defines how the initial parameter set is sampled 
-* **sampler_fcn:** the function defines how the parameters are sampled between interations
+* **posterior_sampler_fcn:** the function defines how the parameters are sampled between interations
 * **intermediate_sampler_fcn:** this function defines how the priors are set between runs
 * **parameter_transform_fcn:** this function transforms the parameter vector before processing
 * **batch_size:** defines the random sample size before each run (default is all samples)
