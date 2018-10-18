@@ -12,8 +12,8 @@ test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'wate
 
 #sample parameters from distribution
 #the mean of X seems like a reasonable center for the distribution params
-def prior_sampler_custom(weights,num_param,random_sample):
-    w = np.random.uniform(np.mean(X),1,size=(num_param,random_sample))
+def prior_sampler_custom(kmldata):
+    w = np.random.uniform(np.mean(X),1,size=(kmldata.number_of_parameters,kmldata.posterior_random_samples))
     return w 
 
 def liklihood_loss(x,y,w):
@@ -39,32 +39,28 @@ y = y.flatten()/np.max(y)
 y = y.reshape(-1,1)
 
 
-runs = 2
-tinterations = 10
-nupdates = 5
-
-simulation_factor = 100
-mutation_factor = 1
-breed_factor = 0
+realizations = 3
+cycles = 10
+volume = 5
+simulations = 100
+volatility = 100
 
 
-kml = KernelML(
+kml = kernelml.KernelML(
          prior_sampler_fcn=prior_sampler_custom,
-         sampler_fcn=None,
+         posterior_sampler_fcn=None,
          intermediate_sampler_fcn=None,
          mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
          batch_size=None)
 
 parameter_by_run,loss_by_run = kml.optimize(X,y,loss_function=distribution_loss,
-                                num_param=3,
+                                number_of_parameters=3,
                                 args=[],
-                                runs=runs,
-                                total_iterations=tinterations,
-                                n_parameter_updates=nupdates,
-                                simulation_factor = simulation_factor,
-                                mutation_factor = mutation_factor,
-                                breed_factor = breed_factor,
+                                number_of_realizations=realizations,
+                                number_of_random_simulations=simulations,
+                                update_volatility = volatility,
+                                number_of_cycles=cycles,
                                 prior_uniform_low=1,
                                 prior_uniform_high=2,
                                 plot_feedback=False,
