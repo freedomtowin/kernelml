@@ -4,13 +4,23 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn import linear_model
-
+import numpy
 train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
+
+def sampler_uniform_distribution(kmldata):
+    
+    random_samples = kmldata.prior_random_samples
+    variances = np.var(kmldata.update_history[:,:],axis=1).flatten()
+    means = kmldata.best_weight_vector.flatten()
+#     means  = kmldata.update_history[:,-1].flatten()
+    return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/2,mu+np.sqrt(sigma*12)/2,(random_samples)) for sigma,mu in zip(variances,means)])
+
+
+
 def ridge_least_sqs_loss(x,y,w):
-    np=numpy
-    alpha,w = w[-1][0],w[:-1]
+    alpha,w = w[0][0],w[1:]
     penalty = 0
     value = 1
     if alpha<value:
@@ -33,30 +43,30 @@ X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
 runs = 3
-tinterations = 10
-nupdates = 3
-zscore = 2.0
-simulation_factor = 200
-mutation_factor = 100
-breed_factor = 100
+zscore = .09
+simulation_factor = 2000
+volatility = 0.1
 
-kml = KernelML(
+cycles = 20
+volume = 10
+
+kml = kernelml.KernelML(
          prior_sampler_fcn=None,
-         sampler_fcn=None,
+         posterior_sampler_fcn=sampler_uniform_distribution,
          intermediate_sampler_fcn=None,
          mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
          batch_size=None)
 
+
 parameter_by_run = kml.optimize(X_train,y_train,loss_function=ridge_least_sqs_loss,
-                                num_param=5,
                                 args=[],
-                                runs=runs,
-                                simulation_factor = simulation_factor,
-                                mutation_factor = mutation_factor,
-                                breed_factor = breed_factor,
-                                total_iterations=tinterations,
-                                n_parameter_updates=nupdates,
+                                number_of_parameters=5,
+                                number_of_realizations=runs,
+                                number_of_random_simulations = simulation_factor,
+                                number_of_cycles=cycles,
+                                update_volatility = volatility,
+                                update_volume=volume,
                                 convergence_z_score=zscore,
                                 prior_uniform_low=1,
                                 prior_uniform_high=2,
@@ -65,7 +75,7 @@ parameter_by_run = kml.optimize(X_train,y_train,loss_function=ridge_least_sqs_lo
 
 #Get model performance on validation data
 w = kml.model.get_best_param()
-alpha,w = w[-1],w[:-1].reshape(-1,1)
+alpha,w = w[0],w[1:].reshape(-1,1)
 print('alpha:',alpha)
 print('w:',w)
 
