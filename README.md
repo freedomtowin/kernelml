@@ -260,6 +260,7 @@ The default random sampling functions for the prior and posterior distributions 
     def prior_sampler_uniform_distribution(kmldata):
         random_samples = kmldata.prior_random_samples
         num_params = kmldata.number_of_parameters
+        # (self.high and self.low) correspond to (prior_uniform_low, prior_uniform_high)
         return np.random.uniform(low=self.low,high=self.high,size=(num_params,
                                                                    random_samples))
 
