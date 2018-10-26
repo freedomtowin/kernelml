@@ -31,6 +31,10 @@ KernelML is brute force optimizer that can be used to train machine learning mod
 pip install kernelml --upgrade
 ```
 
+```
+conda install -c rkotwani kernelml
+```
+
 ## Examples <a name="examples"></a>
 
 ### Kernel Mapping <a name="kernelmapping"></a>
