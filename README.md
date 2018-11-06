@@ -306,7 +306,7 @@ The default parameter tranform function can be overrided. The parameters can be 
 
 ```python
 # The default parameter transform return the parameter set unchanged 
-def default_parameter_transform(w):
+def default_parameter_transform(w,args):
     # rows,columns = (parameter set,iteration)
     return w
 ```
