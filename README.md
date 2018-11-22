@@ -15,9 +15,8 @@ KernelML is brute force optimizer that can be used to train machine learning mod
 2. [Examples](#examples)
     1. [Kernel Mapping](#kernelmapping)
     2. [Fit Optimal Power Transformation](#powertransformation)
-    3. [Fit Sinusoidal Parameters - Ensemble Model](#sinusoids)
-    4. [Negative Log Likelihood Loss](#loglikelihood)
-    5. [Enhanced Ridge Regression](#ridge)
+    3. [Negative Log Likelihood Loss](#loglikelihood)
+    4. [Enhanced Ridge Regression](#ridge)
     5. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
     1. [KmlData](#kmldata)
@@ -78,24 +77,6 @@ def poly_least_sqs_loss(x,y,w):
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y)
 ```
-
-### Non Linear Coefficients - Ensemble Model - Sinusoids <a name="sinusoids"></a>
-
-The optimizer returns a history of parameters for every iteration. Each parameter in the history fits the data slightly differently. Using a combination of the predicted values from these parameters, ensembled together, can improve results. In this example, the phase, time shift, and the scaling for the cosine term will update in that order.
-
-```python
-def sin_least_sqs_loss(x,y,w):
-    hypothesis = w[0]*x[:,0:1] + np.cos(x[:,1:2]*w[1]-w[2])*w[3]
-    loss = hypothesis-y
-    return np.sum(loss**2)/len(y)
-```
-
-The predicted output from each parameter was used as a feature in a unifying model. The train and validation plots below show how using multiple parameter sets can fit complex shapes.
-
-![](https://user-images.githubusercontent.com/21232362/39224841-34a459fc-4817-11e8-9786-be1c8e2ef595.png)
-![](https://user-images.githubusercontent.com/21232362/39224840-323fef32-4817-11e8-9af2-c417b5c78a19.png)
-
-Please see the example code in kernelml-time-series-example.py. Ensemble model results may vary due to the random nature of parameter updates.
 
 ### Negative Loglikelihood Loss <a name="loglikelihood"></a>
 
