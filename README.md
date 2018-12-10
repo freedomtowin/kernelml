@@ -177,7 +177,8 @@ The optimizer's parameters can be automatically adjusted by adjusting the follow
 * **posterior_random_sample_num:** the number of posterior simulated parameters (+bias)
 
 ### Optinal Parameters
-* **convergence_z_score:** the threshold from when a particular realization has converged
+* **convergence_z_score:** an optional threshold from when a particular realization has converged
+* **min_loss_per_change:** an optional threshold from when a particular realization has converged
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
 * **prior_uniform_high:** default pior random sampler - uniform distribution - high
 * **plot_feedback:** provides real-time plots of parameters and losses
@@ -234,6 +235,8 @@ if np.all(np.abs(convergence)<1):
  ```
  
 The formula creates a Z-score using the last 10 parameters and the best parameter. If the Z-score for all the parameters is less than 1, then the algorithm can be said to have converged. This convergence solution works well when there is a theoretical best parameter set.
+
+Another possible solution is to stop the realization when the the % change between cycles is less than a threshold. See `min_loss_per_change`.
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
 
