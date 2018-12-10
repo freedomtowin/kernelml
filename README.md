@@ -139,7 +139,6 @@ parameters_by_run,loss_by_run = kml.optimize(   X,
                                                 loss_function,
                                                 num_param,
                                                 args=[],
-                                                kmldata=None,
                                                 number_of_realizations=1,
                                                 number_of_cycles=20,
                                                 update_volume=10,
@@ -160,7 +159,6 @@ parameters_by_run,loss_by_run = kml.optimize(   X,
 * **loss_function:** f(x,y,w), outputs loss
 * **num_param:** number of parameters in the loss function
 * **arg:** list of extra data to be passed to the loss function
-* **kml_model:** transfer learn weight from another kml.model
 
 ### Iteration Parameters
 * **number_of_realizations:** number of runs
@@ -234,6 +232,7 @@ if np.all(np.abs(convergence)<1):
     print('converged')
     break
  ```
+ 
 The formula creates a Z-score using the last 10 parameters and the best parameter. If the Z-score for all the parameters is less than 1, then the algorithm can be said to have converged. This convergence solution works well when there is a theoretical best parameter set.
 
 ### Override Random Sampling Functions <a name="simulationdefaults"></a>
