@@ -177,8 +177,8 @@ The optimizer's parameters can be automatically adjusted by adjusting the follow
 * **posterior_random_sample_num:** the number of posterior simulated parameters (+bias)
 
 ### Optinal Parameters
-* **convergence_z_score:** an optional threshold from when a particular realization has converged
-* **min_loss_per_change:** an optional threshold from when a particular realization has converged
+* **convergence_z_score:** an optional stopping threshold, stops a realization (see Convergence below)
+* **min_loss_per_change:** an optional stopping threshold, stops a realization when the change in loss is below threshold
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
 * **prior_uniform_high:** default pior random sampler - uniform distribution - high
 * **plot_feedback:** provides real-time plots of parameters and losses
@@ -201,6 +201,17 @@ A KmlData class is primarily used to pass relevant information to the sampler fu
 * **KernelML().kmldata.posterior_random_samples:** the number of posterior simulated parameters
 * **KernelML().kmldata.number_of_updates:** number of successful parameter updates
 
+### Load kmldata
+
+An optimization model can continue where the previous model left off by loading the kmldata.
+
+```
+#optimize
+save_kmldata = KernelML().kmldata
+#load kmldata
+KernelML().load_kmldata(save_kmldata)
+```
+
 
 ### Parallel Processing with Ipyrallel <a name="accessmodel"></a>
 
@@ -217,7 +228,7 @@ with dview.sync_imports():
     import numpy as np
     from scipy import stats
     
-kml.use_ipyparallel(dview)
+KernelML().use_ipyparallel(dview)
 ```
 
 ### Convergence <a name="convergence"></a>
