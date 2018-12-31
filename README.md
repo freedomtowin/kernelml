@@ -23,6 +23,8 @@ KernelML is brute force optimizer that can be used to train machine learning mod
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
     4. [Parameter Transforms](#transforms)
+4. [Extensions](#ext)
+    1. [High Density Region Estimation](#hdr)
 
 ## Installation <a name="installation"></a>
 
@@ -304,3 +306,12 @@ def default_parameter_transform(w,args):
     # rows,columns = (parameter set,iteration)
     return w
 ```
+
+## Extensions <a name="ext"></a>
+
+### High Density Region Estimation <a name="hdr"></a>
+
+model = kernelml.hdr_estimator.HDRE(num_clusters=4, bins_per_dim=11, simulations=400, realizations=10,
+                                    smoothing_parameter=2.0,normalize=False)
+
+model.optimize(y,dview=dview)
