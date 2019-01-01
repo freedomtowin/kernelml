@@ -311,13 +311,30 @@ def default_parameter_transform(w,args):
 
 ### High Density Region Estimation <a name="hdr"></a>
 
+```python
 model = kernelml.hdr_estimator.HDRE(number_of_clusters=4, bins_per_dimension=11, number_of_random_simulations=400, number_of_realizations=10,
                                     smoothing_parameter=2.0,normalize_data=False)
+```                                    
                                     
-                                    
+* **number_of_clusters:** The number of clusters     
+* **bins_per_dimension:** The number of histogram bins across each dimensions. This is used for estimating the kernel density function  
 * **number_of_realizations:** number of runs                                    
 * **number_of_random_simulations:** The number of random simulations per cycle  
-* **smoothing_parameter:** The number of random simulations per cycle  
+* **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
+* **normalize_data:** This computes the norm in the `optimize` method and normalizes the data in the `optimize` and `predict` methods
 
+```python
+model.optimize(y,dview=None)
+```
 
-model.optimize(y,dview=dview)
+This method runs the high region density estimator.
+
+* **y:** Input data -> (rows, columns)
+* **dview:** The ipyparallel direct view. It is highly recommended to use parallel processing for HDRE.
+
+```python
+hdr_assignments = model.predict(y,variance_pad=1.05)
+```
+
+* **y:** Input data -> (rows, columns)
+* **variance_pad:** This pads the variance of each HDR cluster.
