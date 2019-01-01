@@ -42,30 +42,32 @@ start_time = time.time()
 X = train[['long','lat','mean_long','mean_lat']].values
 y = train[["haversine"]].values
 
-runs = 3
-titerations = 5
-nupdates = 2
-simulation_factor = 100
-mutation_factor = 1
-breed_factor = 0
+
+
+realizations = 3
+cycles = 5
+simulations = 100
+zcore = 2.0
+volume = 3
+volatility = 1
+zscore = 1
 
 kml = kernelml.KernelML(
          prior_sampler_fcn=None,
-         sampler_fcn=None,
+         posterior_sampler_fcn=None,
          intermediate_sampler_fcn=None,
          mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
          batch_size=None)
 
-parameter_by_run = kml.optimize(X,y,loss_function=euclid_dist_to_centroid,
-                                num_param=2,
+kml.optimize(X,y,loss_function=euclid_dist_to_centroid,
+                                number_of_parameters=2,
                                 args=[],
-                                runs=runs,
-                                total_iterations=titerations,
-                                n_parameter_updates=nupdates,
-                                simulation_factor = simulation_factor,
-                                mutation_factor = mutation_factor,
-                                breed_factor = breed_factor,
+                                number_of_realizations=realizations,
+                                number_of_cycles=cycles,
+                                number_of_random_simulations=simulations,
+                                update_volume=volume,
+                                update_volatility=volatility,
                                 prior_uniform_low=-1,
                                 prior_uniform_high=1,
                                 plot_feedback=False,
@@ -80,7 +82,8 @@ print("time:",end_time-start_time)
 SST = np.sum((y-np.mean(y))**2) 
 params = kml.model.get_param_by_iter()
 errors = kml.model.get_loss_by_iter()
-update_history = kml.model.get_parameter_update_history()
+update_history = kml.kmldata.update_history
 
 #R-squared by iteration
 1 - errors/SST
+
