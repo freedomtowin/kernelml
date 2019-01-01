@@ -14,7 +14,7 @@ KernelML is brute force optimizer that can be used to train machine learning mod
 1. [Installation](#installation)
 2. [Examples](#examples)
     1. [Kernel Mapping](#kernelmapping)
-    2. [Fit Optimal Power Transformation](#powertransformation)
+    2. [Optimal Power Transformation](#powertransformation)
     3. [Negative Log Likelihood Loss](#loglikelihood)
     4. [Enhanced Ridge Regression](#ridge)
     5. [Parameter Tuning](#tuning)
