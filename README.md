@@ -169,7 +169,7 @@ parameters_by_run,loss_by_run = kml.optimize(   X,
 
 ### Learning Rate Parameters
 The optimizer's parameters can be automatically adjusted by adjusting the following parameters:
-* **number_of_random_simulations:** increases the (coefficient) population size
+* **number_of_random_simulations:** The number of random simulations per cycle
 * **update_volatility:** increases the amount of coefficient augmentation, increases the search magnitude
 
 ### Automatically adjusted parameters
@@ -311,7 +311,13 @@ def default_parameter_transform(w,args):
 
 ### High Density Region Estimation <a name="hdr"></a>
 
-model = kernelml.hdr_estimator.HDRE(num_clusters=4, bins_per_dim=11, simulations=400, realizations=10,
-                                    smoothing_parameter=2.0,normalize=False)
+model = kernelml.hdr_estimator.HDRE(number_of_clusters=4, bins_per_dimension=11, number_of_random_simulations=400, number_of_realizations=10,
+                                    smoothing_parameter=2.0,normalize_data=False)
+                                    
+                                    
+* **number_of_realizations:** number of runs                                    
+* **number_of_random_simulations:** The number of random simulations per cycle  
+* **smoothing_parameter:** The number of random simulations per cycle  
+
 
 model.optimize(y,dview=dview)
