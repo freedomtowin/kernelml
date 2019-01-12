@@ -33,6 +33,7 @@ pip install kernelml --upgrade
 ```
 
 ```
+# There may be a possible issue with the win-64 conda distribution, use at your own risk
 conda install -c rkotwani kernelml
 ```
 
