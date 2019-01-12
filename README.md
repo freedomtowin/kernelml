@@ -154,7 +154,6 @@ parameters_by_run,loss_by_run = kml.optimize(   X,
                                                 posterior_random_samples=None,
                                                 prior_uniform_low=-1,
                                                 prior_uniform_high=1,
-                                                plot_feedback=False,
                                                 print_feedback=True)
 ```
 * **X:** input matrix
@@ -184,7 +183,6 @@ The optimizer's parameters can be automatically adjusted by adjusting the follow
 * **min_loss_per_change:** an optional stopping threshold, stops a realization when the change in loss is below threshold
 * **prior_uniform_low:** default pior random sampler - uniform distribution - low
 * **prior_uniform_high:** default pior random sampler - uniform distribution - high
-* **plot_feedback:** provides real-time plots of parameters and losses
 * **print_feedback:** real-time feedback of parameters,losses, and convergence
 
 
