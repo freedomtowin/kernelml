@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.625
+Current Version: 2.642
 
 Examples script will be updated soon.
 
@@ -323,17 +323,20 @@ model = kernelml.hdr_estimator.HDRE(number_of_clusters=4, bins_per_dimension=11,
 * **normalize_data:** This computes the norm in the `optimize` method and normalizes the data in the `optimize` and `predict` methods
 
 ```python
-model.optimize(y,dview=None)
+model.optimize(X,y=None,agg_func='mean',dview=None)
 ```
 
 This method runs the high region density estimator.
 
-* **y:** Input data -> (rows, columns)
+* **X:** Input data -> (rows, columns)
+* **y:** target data -> (rows, columns)
+* **agg_func:** The aggregate function for the target variable y: 'mean', 'sum', 'var'
 * **dview:** The ipyparallel direct view. It is highly recommended to use parallel processing for HDRE.
 
 ```python
-hdr_assignments = model.predict(y,variance_pad=1.05)
+hdr_assignments = model.predict(y,distance='chebyshev',variance_pad=1.05)
 ```
 
 * **y:** Input data -> (rows, columns)
+* **distance:** the distance metric used to assign data to clusters: 'chebyshev', 'euclidian','mae'
 * **variance_pad:** This pads the variance of each HDR cluster.
