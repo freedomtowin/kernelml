@@ -2,7 +2,9 @@
 
 Project Status: Beta
 
-Current Version: 2.642
+Current Version: 2.657
+
+KernelML is currently only working with ipyparallel 6.0.2 and pyzmq 15.4.0 for parallel computations.
 
 Examples script will be updated soon.
 
