@@ -5,12 +5,14 @@ Project Status: Beta
 Current Version: 2.657
 
 KernelML is NOT working with py37 and associate version of pyzmq/tornado/ipyparallel for parallel computing. The following packages have been tested on OS X 10.4 and found to be stable. 
-        conda create -n ftw python=3.5
-        conda activate ftw
+
+```
+        conda create -n kml python=3.5
+        conda activate kml
         conda install pyzmq=15.4.0=py35_0 tornado=4.4.1=py35_0 mkl=11.3.3=0 ipyparallel==6.2.2
         conda install notebook
         pip install kernelml
-
+```
 
 Examples script will be updated soon.
 
