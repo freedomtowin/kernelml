@@ -340,7 +340,7 @@ This method runs the high region density estimator.
 
 * **X:** Input data -> (rows, columns)
 * **y:** target data -> (rows, columns)
-* **agg_func:** The aggregate function for the target variable y: 'mean', 'sum', 'var', 'inv-var'
+* **agg_func:** The aggregate function for the target variable y: 'mean', 'sum', 'var', 'inv-var', 'count'
 * **dview:** The ipyparallel direct view. It is highly recommended to use parallel processing for HDRE.
 
 ```python
