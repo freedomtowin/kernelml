@@ -344,9 +344,9 @@ This method runs the high region density estimator.
 * **dview:** The ipyparallel direct view. It is highly recommended to use parallel processing for HDRE.
 
 ```python
-hdr_assignments = model.predict(y,distance='chebyshev',variance_pad=1.05)
+hdr_assignments = model.predict(y,distance='chebyshev',pad=1.0)
 ```
 
 * **y:** Input data -> (rows, columns)
 * **distance:** the distance metric used to assign data to clusters: 'chebyshev', 'euclidian','mae'
-* **variance_pad:** This pads the variance of each HDR cluster.
+* **pad:** This pads the variance of each HDR cluster.
