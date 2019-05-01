@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.657
+Current Version: 2.665
 
 KernelML is NOT working with py37 and associate version of pyzmq/tornado/ipyparallel for parallel computing. The following packages have been tested on OS X 10.4 and found to be stable. 
 
