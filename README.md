@@ -318,11 +318,11 @@ def default_parameter_transform(w,args):
 
 ## Extensions <a name="ext"></a>
 
-### High Density Region Estimation <a name="hdr"></a>
+### Critical Region Estimation <a name="hdr"></a>
 
 ```python
-model = kernelml.hdr_estimator.HDRE(number_of_clusters=4, bins_per_dimension=11, number_of_random_simulations=400, number_of_realizations=10,
-                                    smoothing_parameter=2.0,normalize_data=False)
+model = kernelml.region_estimator.CriticalRegions(number_of_clusters, bins_per_dimension=21, number_of_random_simulations=500, number_of_realizations=10,
+                                    smoothing_parameter=2.0)
 ```                                    
                                     
 * **number_of_clusters:** The number of clusters     
@@ -330,7 +330,6 @@ model = kernelml.hdr_estimator.HDRE(number_of_clusters=4, bins_per_dimension=11,
 * **number_of_realizations:** number of runs                                    
 * **number_of_random_simulations:** The number of random simulations per cycle  
 * **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
-* **normalize_data:** This computes the norm in the `optimize` method and normalizes the data in the `optimize` and `predict` methods
 
 ```python
 model.optimize(X,y=None,agg_func='mean',dview=None)
@@ -340,13 +339,23 @@ This method runs the high region density estimator.
 
 * **X:** Input data -> (rows, columns)
 * **y:** target data -> (rows, columns)
-* **agg_func:** The aggregate function for the target variable y: 'mean', 'sum', 'var', 'inv-var', 'count'
+* **agg_func:** The aggregate function for the target variable y: 'mean', 'variance', 'max', 'false-positive-cost', 'false-negative-cost', 'count'
 * **dview:** The ipyparallel direct view. It is highly recommended to use parallel processing for HDRE.
 
 ```python
-hdr_assignments = model.predict(y,distance='chebyshev',pad=1.0)
+assignments = model.get_assignments(X,pad=1.0)
+```
+Returns an assignment matrix (observations, clusters) that represents whether a data point is within a hypercube cluster.
+
+* **X:** Input data -> (rows, columns)
+* **pad:** This pads the variance of each HDR cluster.
+
+```python
+distance = model.get_distances(X,distance='chebyshev',pad=1.0)
 ```
 
-* **y:** Input data -> (rows, columns)
+Computes the distances between the data points and the hypercube centroids.
+
+* **X:** Input data -> (rows, columns)
 * **distance:** the distance metric used to assign data to clusters: 'chebyshev', 'euclidian','mae'
 * **pad:** This pads the variance of each HDR cluster.
