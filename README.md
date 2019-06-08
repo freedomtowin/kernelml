@@ -321,7 +321,7 @@ def default_parameter_transform(w,args):
 ### Critical Region Estimation <a name="hdr"></a>
 
 ```python
-model = kernelml.region_estimator.CriticalRegions(number_of_clusters, bins_per_dimension=21, number_of_random_simulations=500, number_of_realizations=10,
+model = kernelml.region_estimator.HighDensityRegions(number_of_clusters, bins_per_dimension=21, number_of_random_simulations=500, number_of_realizations=10,
                                     smoothing_parameter=2.0)
 ```                                    
                                     
