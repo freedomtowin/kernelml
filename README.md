@@ -9,8 +9,8 @@ KernelML is NOT working with py37 and associate version of pyzmq/tornado/ipypara
 ```
         conda create -n kml python=3.5
         conda activate kml
-        pip install pyzmq==15.4.0 tornado==4.4.1 ipyparallel==6.2.2 jupyter
-        conda install notebook
+        pip install pyzmq==15.4.0 tornado==4.4.1 ipyparallel==6.2.2
+        conda install notebook==5.4.1
         pip install kernelml
 ```
 
