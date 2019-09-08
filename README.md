@@ -4,12 +4,12 @@ Project Status: Beta
 
 Current Version: 2.665
 
-KernelML is NOT working with py37 and associate version of pyzmq/tornado/ipyparallel for parallel computing. The following packages have been tested on OS X 10.4 and found to be stable. This distribution appear to function on Linux as well.
+KernelML is NOT working with py37 and associate version of pyzmq/tornado/ipyparallel for parallel computing. The following packages have been tested on OS X 10.4 and found to be stable. This distribution appear to function on Linux as well. Jupyter notebook has some wonky package requirements which can cause problems if installed with conda. 
 
 ```
         conda create -n kml python=3.5
         conda activate kml
-        pip install pyzmq==15.4.0 tornado==4.4.1 ipyparallel==6.2.2
+        pip install pyzmq==15.4.0 tornado==4.4.1 ipyparallel==6.2.2 jupyter
         conda install notebook
         pip install kernelml
 ```
