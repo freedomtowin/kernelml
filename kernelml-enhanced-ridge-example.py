@@ -1,12 +1,14 @@
+
 import kernelml
-import seaborn
+from numba import jit,njit, prange, types
+# import seaborn
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn import linear_model
 import numpy
-train=pd.read_csv("data/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
-test=pd.read_csv("data/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
+train=pd.read_csv("DATA/kc_house_train_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
+test=pd.read_csv("DATA/kc_house_test_data.csv",dtype = {'bathrooms':float, 'waterfront':int, 'sqft_above':int, 'sqft_living15':float, 'grade':int, 'yr_renovated':int, 'price':float, 'bedrooms':float, 'zipcode':str, 'long':float, 'sqft_lot15':float, 'sqft_living':float, 'floors':str, 'condition':int, 'lat':float, 'date':str, 'sqft_basement':int, 'yr_built':int, 'id':str, 'sqft_lot':int, 'view':int})
 
 
 def sampler_uniform_distribution(kmldata):
@@ -18,7 +20,7 @@ def sampler_uniform_distribution(kmldata):
     return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/2,mu+np.sqrt(sigma*12)/2,(random_samples)) for sigma,mu in zip(variances,means)])
 
 
-
+@jit('float64(float64[:,:], float64[:,:], float64[:,:])',nopython=True)
 def ridge_least_sqs_loss(x,y,w):
     alpha,w = w[0][0],w[1:]
     penalty = 0
@@ -31,6 +33,15 @@ def ridge_least_sqs_loss(x,y,w):
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
 
+@njit('float64[:](float64[:,:], float64[:,:], float64[:,:])',parallel=True)
+def map_losses(X,y,w_list):
+    N = w_list.shape[1]
+    resX = np.zeros(N)
+    for i in prange(N):
+        loss = ridge_least_sqs_loss(X,y,w_list[:,i:i+1])
+        resX[i] = loss
+    return resX
+
 
 X_train = train[['sqft_living','bedrooms','bathrooms']].values
 y_train = train[['price']].values
@@ -42,13 +53,15 @@ SST_test = np.sum((y_test-np.mean(y_test))**2)
 X_train = np.column_stack((np.ones(X_train.shape[0]),X_train))
 X_test = np.column_stack((np.ones(X_test.shape[0]),X_test))
 
-runs = 3
+runs = 5
 zscore = .09
-simulation_factor = 2000
-volatility = 0.1
+simulation_factor = 100
+volatility = 10
 
-cycles = 20
-volume = 10
+min_per_change=0.001
+
+cycles = 100
+volume = 100
 
 kml = kernelml.KernelML(
          prior_sampler_fcn=None,
@@ -56,11 +69,15 @@ kml = kernelml.KernelML(
          intermediate_sampler_fcn=None,
          mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
+         loss_calculation_fcn=map_losses,
          batch_size=None)
 
 
-parameter_by_run = kml.optimize(X_train,y_train,loss_function=ridge_least_sqs_loss,
-                                args=[],
+# args_list = [np.array([1,2,3],dtype=np.float64)]
+args_list = []
+
+kml.optimize(X_train,y_train,
+                                args=args_list,
                                 number_of_parameters=5,
                                 number_of_realizations=runs,
                                 number_of_random_simulations = simulation_factor,
@@ -70,8 +87,8 @@ parameter_by_run = kml.optimize(X_train,y_train,loss_function=ridge_least_sqs_lo
                                 convergence_z_score=zscore,
                                 prior_uniform_low=1,
                                 prior_uniform_high=2,
-                                plot_feedback=False,
                                 print_feedback=True)
+
 
 #Get model performance on validation data
 w = kml.model.get_best_param()
