@@ -1,6 +1,7 @@
 import pandas as pd
 import time
-import seaborn
+from numba import jit,njit, prange, types
+# import seaborn
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn import linear_model
@@ -13,14 +14,20 @@ def poly_function(x,w):
     hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
     return hypothesis
     
+@jit('float64(float64[:,:], float64[:,:], float64[:,:])',nopython=True)
 def poly_least_sqs_loss(x,y,w):
-    np=numpy
-    def poly_function(x,w):
-        hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
-        return hypothesis
-    hypothesis = poly_function(x,w)
+    hypothesis = w[0]*x[:,0:1] + w[1]*(x[:,1:2]) + w[2]*(x[:,1:2])**w[3]
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y)
+
+@njit('float64[:](float64[:,:], float64[:,:], float64[:,:])',parallel=True)
+def map_losses(X,y,w_list):
+    N = w_list.shape[1]
+    resX = np.zeros(N)
+    for i in prange(N):
+        loss = poly_least_sqs_loss(X,y,w_list[:,i:i+1])
+        resX[i] = loss
+    return resX
 
 
 #Create train and test datasets
@@ -46,15 +53,13 @@ tinterations = 10
 sequpdate = False
 
 
-
-kml.use_ipyparallel(dview)
-
-kml = KernelML(
+kml = kernelml.KernelML(
          prior_sampler_fcn=None,
-         sampler_fcn=None,
+         posterior_sampler_fcn=None,
          intermediate_sampler_fcn=None,
          mini_batch_sampler_fcn=None,
          parameter_transform_fcn=None,
+         loss_calculation_fcn=map_losses,
          batch_size=None)
 
 
@@ -62,26 +67,21 @@ simulation_factor = 100
 mutation_factor = 10
 breed_factor= 10
 
-parameter_by_run = kml.optimize(X_train,y_train,loss_function=poly_least_sqs_loss,
-                                num_param=4,
+kml.optimize(X_train,y_train,
+                                number_of_parameters=4,
                                 args=[],
-                                runs=runs,n_parameter_updates=5,
-                                total_iterations=tinterations,
-                                simulation_factor = simulation_factor,
-                                mutation_factor = mutation_factor,
-                                breed_factor = breed_factor,
+                                number_of_realizations=runs,
+                                number_of_random_simulations = simulation_factor,
+                                number_of_cycles=cycles,
+                                update_volatility = volatility,
+                                update_volume=volume,
                                 convergence_z_score=zscore,
-                                prior_uniform_low=0,
+                                prior_uniform_low=1,
                                 prior_uniform_high=2,
-                                plot_feedback=False,
                                 print_feedback=True)
 
 
 
-#Get the model parameters by iteration
-params = kml.model.get_param_by_iter()
-errors = kml.model.get_loss_by_iter()
-update_history = kml.model.get_parameter_update_history()
 
 #SST for train and test
 SST_train = np.sum((y_train-np.mean(y_train))**2)/len(y_train)
