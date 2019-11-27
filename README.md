@@ -2,16 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 2.665
-
-KernelML is NOT working with py37 and associate version of pyzmq/tornado/ipyparallel for parallel computing. The following packages have been tested on OS X 10.4 and found to be stable. This distribution appear to function on Linux as well. Thw package `jupyter` have a few wonky package requirements. Please install `jupyter` with conda before downgrading the following packages. 
-
-```
-        conda create -n kml python=3.5
-        conda activate kml
-        pip install cython pyzmq==15.4.0 tornado==4.4.1 ipyparallel==6.2.2 notebook==5.4.1
-        pip install kernelml
-```
+Current Version: 3.0
 
 Examples script will be updated soon.
 
@@ -29,6 +20,8 @@ KernelML is brute force optimizer that can be used to train machine learning mod
     5. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
     1. [KmlData](#kmldata)
+    2. [Pass Arguements]
+    2. [Parallel Computations](#parallel)
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
     4. [Parameter Transforms](#transforms)
@@ -131,25 +124,47 @@ There are many potential strategies for choosing optimization parameters. Howeve
 ### KernelML <a name="intialization"></a>
 
 ```python
-kml = kernelml.KernelML(prior_sampler_fcn=None,
+kml = kernelml.KernelML(
+                 loss_calculation_fcn,
+                 prior_sampler_fcn=None,
                  posterior_sampler_fcn=None,
                  intermediate_sampler_fcn=None,
                  parameter_transform_fcn=None,
                  batch_size=None)
 ```
-* **prior_sampler_fcn:** the function defines how the initial parameter set is sampled 
-* **posterior_sampler_fcn:** the function defines how the parameters are sampled between interations
+
+* **loss_calculation_fcn:** this function defines how the loss function is calculated 
+* **prior_sampler_fcn:** this function defines how the initial parameter set is sampled 
+* **posterior_sampler_fcn:** this function defines how the parameters are sampled between interations
 * **intermediate_sampler_fcn:** this function defines how the priors are set between runs
 * **parameter_transform_fcn:** this function transforms the parameter vector before processing
 * **batch_size:** defines the random sample size before each run (default is all samples)
 
+`loss_calculation_fcn=map_losses` should be structured as follows:
+
+```python
+def least_sq_loss_function(X,y,w):
+   intercept,w = w[0],w[1:]
+   hyp = X.dot(w)+intercept
+   error = (hyp-y)
+   return np.sum(error**2)
+
+def map_losses(X,y,w_list):
+    N = w_list.shape[1]
+    out = np.zeros(N)
+    for i in prange(N):
+        loss = least_sq_loss_function(X,y,w_list[:,i:i+1])
+        out[i] = loss
+    return out
+```
+
+The `loss_calculation_fcn` should map a list of input parameters to a list of loss function outputs. The `map_losses` function above calls the `least_sq_loss_function` and then stores the output for each parameter set in w_list.
 
 ```python
 # Begins the optimization process, returns (list of parameters by run),(list of losses by run)
-parameters_by_run,loss_by_run = kml.optimize(   X,
+kml.optimize(   X,
                                                 y,
-                                                loss_function,
-                                                num_param,
+                                                number_of_parameters,
                                                 args=[],
                                                 number_of_realizations=1,
                                                 number_of_cycles=20,
@@ -223,22 +238,46 @@ KernelML().load_kmldata(save_kmldata)
 ```
 
 
-### Parallel Processing with Ipyrallel <a name="accessmodel"></a>
+```python
+# The args parameter can be set in the kernelml.KernelML().optimize to pass extra data
+# For example, if args = [arg1,arg2]
 
-Initialize the parallel engines, set the direct view block to true, and then import the require libraries to the engines.
+def loss_function(X,y,w,alpha):
+   return loss
+
+def map_losses(X,y,w_list,arg1,arg2):
+    N = w_list.shape[1]
+    out = np.zeros(N)
+    for i in prange(N):
+        loss = loss_function(X,y,w_list[:,i:i+1])
+        out[i] = loss
+    return out
+```
+
+### Parallel Processing with Numba <a name="parallel"></a>
+
+Starting with KernelML 3.0, parallelization can be defined with nuba for GPU or CPU parallelization.
 
 ```python
-from ipyparallel import Client
-rc = Client(profile='default')
-dview = rc[:]
 
-dview.block = True
+from numba import jit,njit, prange
 
-with dview.sync_imports():
-    import numpy as np
-    from scipy import stats
-    
-KernelML().use_ipyparallel(dview)
+@jit('float64(float64[:,:], float64[:,:], float64[:,:])',nopython=True)
+def least_sq_loss_function(X,y,w):
+   intercept,w = w[0],w[1:]
+   hyp = X.dot(w)+intercept
+   error = (hyp-y)
+   return np.sum(error**2)
+
+
+@njit('float64[:](float64[:,:], float64[:,:], float64[:,:])',parallel=True)
+def map_losses(X,y,w_list,alpha):
+    N = w_list.shape[1]
+    out = np.zeros(N)
+    for i in prange(N):
+        loss = least_sq_loss_function(X,y,w_list[:,i:i+1])
+        out[i] = loss
+    return out
 ```
 
 ### Convergence <a name="convergence"></a>
