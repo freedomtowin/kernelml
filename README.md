@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 3.1
+Current Version: 3.11
 
 Examples script will be updated soon.
 
@@ -11,6 +11,10 @@ Examples script will be updated soon.
 KernelML is brute force optimizer that can be used to train machine learning models. The package uses a combination of a neuroevolution algorithms, heuristics, and monte carlo simulations to optimize a parameter vector with a user-defined loss function.
 
 Parallelization is important for simulation based optimizers. KernelML supports Numba compiled functions for parallelization across CPUs and GPU acceleration.
+
+The following script have not been updated for KernelML 3.1:
+1. kernelml-autoencoder-example.ipynb
+2. kernelml-time-series-example.py
 
 ## Table of contents
 1. [Installation](#installation)
@@ -350,12 +354,12 @@ The default random sampling functions for the prior and posterior distributions 
 
 ### Parameter Transforms <a name="transform"></a>
 
-The default parameter tranform function can be overrided. The parameters can be transformed before the loss calculations and parameter updates. For example, the parameters can be transformed if some parameters must be integers, positive, or within a certain range.
+The default parameter tranform function can be overrided. The parameters can be transformed before the loss calculations and parameter updates. For example, the parameters can be transformed if some parameters must be integers, positive, or within a certain range. The argument list in the KernelML().optimize function are passed as parameters.
 
 ```python
 # The default parameter transform return the parameter set unchanged 
-def default_parameter_transform(w,args):
-    # rows,columns = (parameter set,iteration)
+def default_parameter_transform(w,*args):
+    # w[rows,columns] = (parameter set,iteration)
     return w
 ```
 
@@ -383,7 +387,6 @@ This method runs the high region density estimator.
 * **X:** Input data -> (rows, columns)
 * **y:** target data -> (rows, columns)
 * **agg_func:** The aggregate function for the target variable y: 'mean', 'variance', 'max', 'false-positive-cost', 'false-negative-cost', 'count'
-* **dview:** The ipyparallel direct view. It is highly recommended to use parallel processing for HDRE.
 
 ```python
 assignments = model.get_assignments(X,pad=1.0)
