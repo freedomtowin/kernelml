@@ -68,6 +68,9 @@ def euclid_dist_to_centroid(x,y,w):
         euclid = np.sqrt((w[0]*lon1-w[0]*lon2)**2+(w[1]*lat1-w[1]*lat2)**2) 
         haver = y
         return np.sum((euclid-haver)**2)
+        
+# y: pre-computed haversine distance to centroid
+# x: lon1, lat1, lon2, lat2: input longitude, input latitiude, centroid longitude, centroid latitiude
 ```
 
 ### Non Linear Coefficients - Power Transformation <a name="powertransformation"></a>
