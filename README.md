@@ -2,13 +2,15 @@
 
 Project Status: Beta
 
-Current Version: 3.0
+Current Version: 3.1
 
 Examples script will be updated soon.
 
 ## About 
 
 KernelML is brute force optimizer that can be used to train machine learning models. The package uses a combination of a neuroevolution algorithms, heuristics, and monte carlo simulations to optimize a parameter vector with a user-defined loss function.
+
+Parallelization is important for simulation based optimizers. KernelML supports Numba compiled functions for parallelization across CPUs and GPU acceleration.
 
 ## Table of contents
 1. [Installation](#installation)
@@ -20,7 +22,7 @@ KernelML is brute force optimizer that can be used to train machine learning mod
     5. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
     1. [KmlData](#kmldata)
-    2. [Pass Arguements]
+    2. [Passing Static Data](#staticdata)
     2. [Parallel Computations](#parallel)
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
@@ -34,10 +36,6 @@ KernelML is brute force optimizer that can be used to train machine learning mod
 pip install kernelml --upgrade
 ```
 
-```
-# There may be a possible issue with the win-64 conda distribution, use at your own risk
-conda install -c rkotwani kernelml
-```
 
 ## Examples <a name="examples"></a>
 
@@ -102,11 +100,13 @@ Add a parameter for L2 regularization and allow the alpha parameter to fluxuate 
 
 ```python
 def ridge_least_sqs_loss(x,y,w):
-    alpha,w = w[-1][0],w[:-1]
+    alpha,w = w[0][0],w[1:]
     penalty = 0
     value = 1
-    if alpha<=value:
-        penalty = 10*abs(value-alpha)
+    if alpha<value:
+        penalty = 3*abs(value-alpha)
+    if alpha<0:
+        alpha=0
     hypothesis = x.dot(w)
     loss = hypothesis-y 
     return np.sum(loss**2)/len(y) + alpha*np.sum(w[1:]**2) + penalty*np.sum(w[1:]**2)
@@ -152,7 +152,7 @@ def least_sq_loss_function(X,y,w):
 def map_losses(X,y,w_list):
     N = w_list.shape[1]
     out = np.zeros(N)
-    for i in prange(N):
+    for i in range(N):
         loss = least_sq_loss_function(X,y,w_list[:,i:i+1])
         out[i] = loss
     return out
@@ -237,19 +237,21 @@ save_kmldata = KernelML().kmldata
 KernelML().load_kmldata(save_kmldata)
 ```
 
+### Passing Static Data <a name="staticdata"></a>
+
+The args parameter can be set in the kernelml.KernelML().optimize to pass extra data
 
 ```python
-# The args parameter can be set in the kernelml.KernelML().optimize to pass extra data
 # For example, if args = [arg1,arg2]
 
-def loss_function(X,y,w,alpha):
+def loss_function(X,y,w,arg1,arg2):
    return loss
 
 def map_losses(X,y,w_list,arg1,arg2):
     N = w_list.shape[1]
     out = np.zeros(N)
-    for i in prange(N):
-        loss = loss_function(X,y,w_list[:,i:i+1])
+    for i in range(N):
+        loss = loss_function(X,y,w_list[:,i:i+1],arg1,arg2)
         out[i] = loss
     return out
 ```
