@@ -2,7 +2,7 @@
 
 Project Status: Beta
 
-Current Version: 3.11
+Current Version: 3.16
 
 Examples script will be updated soon.
 
