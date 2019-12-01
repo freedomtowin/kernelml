@@ -10,7 +10,9 @@ Examples script will be updated soon.
 
 KernelML is brute force optimizer that can be used to train machine learning models. The package uses a combination of a neuroevolution algorithms, heuristics, and monte carlo simulations to optimize a parameter vector with a user-defined loss function.
 
-Parallelization is important for simulation based optimizers. KernelML supports Numba compiled functions for parallelization across CPUs and GPU acceleration.
+The field of high performance computing is always change, and parallelization is very important for simulation based optimizers. This is why parallelization is left to the developer to implement. KernelML supports Numba compiled functions for parallelization across CPUs and GPU acceleration. 
+
+Due to the recent changes to threading and MKL in Anaconda distributions additional steps it has become difficult to incoporate the original parallelization engine, ipyparallel. 
 
 The following script have not been updated for KernelML 3.1:
 1. kernelml-autoencoder-example.ipynb
