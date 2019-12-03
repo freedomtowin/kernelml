@@ -29,7 +29,7 @@ The following script have not been updated for KernelML 3.1:
 3. [Methods](#methods)
     1. [KmlData](#kmldata)
     2. [Passing Static Data](#staticdata)
-    2. [Parallel Computations](#parallel)
+    2. [Parallel Processing with Numba](#parallelnumba)
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
     4. [Parameter Transforms](#transforms)
@@ -265,7 +265,7 @@ def map_losses(X,y,w_list,arg1,arg2):
     return out
 ```
 
-### Parallel Processing with Numba <a name="parallel"></a>
+### Parallel Processing with Numba <a name="parallelnumba"></a>
 
 Starting with KernelML 3.0, parallelization can be defined with nuba for GPU or CPU parallelization.
 
