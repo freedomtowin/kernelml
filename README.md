@@ -383,7 +383,7 @@ model.optimize(X,y=None,agg_func='mean',
                         smoothing_parameter=2.0)
 ```
 
-This method runs the high region density estimator.
+This method runs the density factorization algorithm.
 
 * **X:** Input data -> (rows, columns)
 * **y:** target data -> (rows, columns)
@@ -399,7 +399,7 @@ assignments = model.get_assignments(X,pad=1.0)
 Returns an assignment matrix (observations, clusters) that represents whether a data point is within a hypercube cluster.
 
 * **X:** Input data -> (rows, columns)
-* **pad:** This pads the variance of each HDR cluster.
+* **pad:** This pads the variance of each density cluster.
 
 ```python
 distance = model.get_distances(X,distance='chebyshev',pad=1.0)
@@ -409,4 +409,15 @@ Computes the distances between the data points and the hypercube centroids.
 
 * **X:** Input data -> (rows, columns)
 * **distance:** the distance metric used to assign data to clusters: 'chebyshev', 'euclidian','mae'
-* **pad:** This pads the variance of each HDR cluster.
+* **pad:** This pads the variance of each density cluster.
+
+```python
+model.prune_clusters(X,pad=pad,limit=10)
+```
+
+Prunes the clusters that have a lower number of data points than the limit. The model can be optimized after pruning.
+
+* **X:** Input data -> (rows, columns)
+* **pad:** This pads the variance of each density cluster.
+* **limit:** the distance metric used to assign data to clusters: 'chebyshev', 'euclidian','mae'
+
