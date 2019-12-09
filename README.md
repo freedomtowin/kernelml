@@ -376,8 +376,11 @@ model = kernelml.region_estimator.DensityFactorization(number_of_clusters)
 * **number_of_clusters:** The number of clusters     
 
 ```python
-model.optimize(X,y=None,agg_func='mean', bins_per_dimension=21, number_of_random_simulations=500, number_of_realizations=10,
-                                    smoothing_parameter=2.0)
+model.optimize(X,y=None,agg_func='mean',
+                        bins_per_dimension=21,
+                        number_of_random_simulations=500,
+                        number_of_realizations=10,
+                        smoothing_parameter=2.0)
 ```
 
 This method runs the high region density estimator.
