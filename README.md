@@ -34,7 +34,7 @@ The following script have not been updated for KernelML 3.1:
     3. [Override Random Sampling Functions](#simulationdefaults)
     4. [Parameter Transforms](#transforms)
 4. [Extensions](#ext)
-    1. [High Density Region Estimation](#hdr)
+    1. [Density Factorization](#hdr)
 
 ## Installation <a name="installation"></a>
 
@@ -367,21 +367,17 @@ def default_parameter_transform(w,*args):
 
 ## Extensions <a name="ext"></a>
 
-### Critical Region Estimation <a name="hdr"></a>
+### Density Factorization <a name="hdr"></a>
 
 ```python
-model = kernelml.region_estimator.HighDensityRegions(number_of_clusters, bins_per_dimension=21, number_of_random_simulations=500, number_of_realizations=10,
-                                    smoothing_parameter=2.0)
+model = kernelml.region_estimator.DensityFactorization(number_of_clusters)
 ```                                    
                                     
 * **number_of_clusters:** The number of clusters     
-* **bins_per_dimension:** The number of histogram bins across each dimensions. This is used for estimating the kernel density function  
-* **number_of_realizations:** number of runs                                    
-* **number_of_random_simulations:** The number of random simulations per cycle  
-* **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
 
 ```python
-model.optimize(X,y=None,agg_func='mean',dview=None)
+model.optimize(X,y=None,agg_func='mean', bins_per_dimension=21, number_of_random_simulations=500, number_of_realizations=10,
+                                    smoothing_parameter=2.0)
 ```
 
 This method runs the high region density estimator.
@@ -389,6 +385,10 @@ This method runs the high region density estimator.
 * **X:** Input data -> (rows, columns)
 * **y:** target data -> (rows, columns)
 * **agg_func:** The aggregate function for the target variable y: 'mean', 'variance', 'max', 'false-positive-cost', 'false-negative-cost', 'count'
+* **bins_per_dimension:** The number of histogram bins across each dimensions. This is used for estimating the kernel density function  
+* **number_of_realizations:** number of runs                                    
+* **number_of_random_simulations:** The number of random simulations per cycle  
+* **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
 
 ```python
 assignments = model.get_assignments(X,pad=1.0)
