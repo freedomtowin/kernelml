@@ -23,9 +23,8 @@ The following script have not been updated for KernelML 3.1+:
 2. [Examples](#examples)
     1. [Kernel Mapping](#kernelmapping)
     2. [Optimal Power Transformation](#powertransformation)
-    3. [Negative Log Likelihood Loss](#loglikelihood)
-    4. [Enhanced Ridge Regression](#ridge)
-    5. [Parameter Tuning](#tuning)
+    3. [Enhanced Ridge Regression](#ridge)
+    4. [Parameter Tuning](#tuning)
 3. [Methods](#methods)
     1. [KmlData](#kmldata)
     2. [Passing Static Data](#staticdata)
@@ -90,19 +89,6 @@ def poly_least_sqs_loss(x,y,w):
     return np.sum(loss**2)/len(y)
 ```
 
-### Negative Loglikelihood Loss <a name="loglikelihood"></a>
-
-Kernelml can minimize non-linear loss functions such as minimizing the negative loglikelihood for logistic regression. In addition, the optimizer fit a distribution to an empirical histogram using negative loglikelihood as the loss function. Please see kernelml-likelihood-distribution-fitting.py. 
-
-```python
-def logistic_liklihood_loss(x,y,w):
-    hypothesis = x.dot(w)
-    hypothesis = 1/(1+np.exp(-1*hypothesis))
-    hypothesis[hypothesis<=0.00001] = 0.00001
-    loss = -1*((1-y).T.dot(np.log(1-hypothesis)) + y.T.dot(np.log(hypothesis)))/len(y)
-    return loss.flatten()[0]
-```
-
 ### Enhanced Ridge Regression <a name="ridge"></a>
 
 Add a parameter for L2 regularization and allow the alpha parameter to fluxuate from a target value. The added flexibility can improve generalization to the validation data. Please see kernelml-enhanced-ridge-example.py.
@@ -124,7 +110,6 @@ def ridge_least_sqs_loss(x,y,w):
 ### Parameter Tuning "Rules of Thumb" <a name="tuning"></a>
 
 There are many potential strategies for choosing optimization parameters. However, the choice of different setting involves balancing the number_of_random_simulations, update_volume, and update_volatility.
-
 
 
 ## Methods <a name="methods"></a>
