@@ -355,17 +355,19 @@ def default_parameter_transform(w,*args):
 ### Density Factorization <a name="hdr"></a>
 
 ```python
-model = kernelml.region_estimator.DensityFactorization(number_of_clusters)
+model = kernelml.region_estimator.DensityFactorization(number_of_clusters,bins_per_dimension=41,smoothing_parameter=2.0)
 ```                                    
                                     
 * **number_of_clusters:** The number of clusters     
+* **bins_per_dimension:** The number of histogram bins across each dimensions. This is used for estimating the kernel density function  
+* **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
 
 ```python
 model.optimize(X,y=None,agg_func='mean',
-                        bins_per_dimension=21,
+                        ,
                         number_of_random_simulations=500,
                         number_of_realizations=10,
-                        smoothing_parameter=2.0)
+                        )
 ```
 
 This method runs the density factorization algorithm.
@@ -373,10 +375,9 @@ This method runs the density factorization algorithm.
 * **X:** Input data -> (rows, columns)
 * **y:** target data -> (rows, columns)
 * **agg_func:** The aggregate function for the target variable y: 'mean', 'variance', 'max', 'false-positive-cost', 'false-negative-cost', 'count'
-* **bins_per_dimension:** The number of histogram bins across each dimensions. This is used for estimating the kernel density function  
 * **number_of_realizations:** number of runs                                    
 * **number_of_random_simulations:** The number of random simulations per cycle  
-* **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
+
 
 ```python
 assignments = model.get_assignments(X,pad=1.0)
