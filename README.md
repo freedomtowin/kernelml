@@ -327,14 +327,6 @@ The default random sampling functions for the prior and posterior distributions 
             return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/4,mu+np.sqrt(sigma*12)/4,(random_samples)) for sigma,mu in zip(variances,means)])
         
         
-    #mini batch random choice sampler
-    def mini_batch_random_choice(X,y,batch_size):
-        all_samples = np.arange(0,X.shape[0])
-        rand_sample = np.random.choice(all_samples,size=batch_size,replace=False)
-        X_batch = X[rand_sample]
-        y_batch = y[rand_sample]
-        return X_batch,y_batch
-        
     #http://downloads.hindawi.com/journals/cin/2019/4243853.pdf
     def sampler_direction_based_stochastic_search(kmldata):
 
@@ -402,7 +394,18 @@ The default random sampling functions for the prior and posterior distributions 
         print(X.shape)
 
         return X
+        
 ```
+
+```python
+    #mini batch random choice sampler
+    def mini_batch_random_choice(X,y,batch_size):
+        all_samples = np.arange(0,X.shape[0])
+        rand_sample = np.random.choice(all_samples,size=batch_size,replace=False)
+        X_batch = X[rand_sample]
+        y_batch = y[rand_sample]
+        return X_batch,y_batch
+```   
 
 ### Parameter Transforms <a name="transform"></a>
 
