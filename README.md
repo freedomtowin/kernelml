@@ -315,8 +315,6 @@ The default random sampling functions for the prior and posterior distributions 
         means = kmldata.best_weight_vector.flatten()
 
         return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/2,mu+np.sqrt(sigma*12)/2,(random_samples)) for sigma,mu in zip(variances,means)])
-
-
             
             
     #intermediate sampler (default)
@@ -327,7 +325,6 @@ The default random sampling functions for the prior and posterior distributions 
             means = kmldata.update_history[:,-1].flatten()
 
             return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/4,mu+np.sqrt(sigma*12)/4,(random_samples)) for sigma,mu in zip(variances,means)])
-
         
         
     #mini batch random choice sampler
@@ -337,6 +334,74 @@ The default random sampling functions for the prior and posterior distributions 
         X_batch = X[rand_sample]
         y_batch = y[rand_sample]
         return X_batch,y_batch
+        
+    #http://downloads.hindawi.com/journals/cin/2019/4243853.pdf
+    def sampler_direction_based_stochastic_search(kmldata):
+
+        X = kmldata.update_history[:,::-1]
+
+        X = X[:,:X.shape[1] - X.shape[1]%2]
+
+        X_N = X[:,:X.shape[1]//2] 
+        X_M = X[:,X.shape[1]//2:]
+
+        MUT = np.zeros((X.shape[0],X.shape[1]//2))
+
+        BEST = X[:,0:1] 
+
+        TOP_N_AVG = np.mean(X_N,axis=1)[:,np.newaxis]
+
+        PAIR_DIFF = X_N - X_M
+
+        DIRECTION_AVG = 1./3. * (TOP_N_AVG+BEST+X_N)
+
+        DIRECTION_DEV = ((PAIR_DIFF)/12)**2 + 1e-9
+
+        BEST_DEV = ((BEST-TOP_N_AVG)/12)**2 + 1e-9
+
+        size = X.shape[1]//2
+
+        Y_N = np.vstack([np.random.normal(DIRECTION_AVG[j],DIRECTION_DEV[j],size=(1,size)) for j in range(X.shape[0])])
+
+        Y_M = np.vstack([np.random.normal(BEST[j],BEST_DEV[j],size=(1,size)) for j in range(X.shape[0])])
+
+        Y_K = BEST + np.random.uniform(0,1,size=(X.shape[0],size))*PAIR_DIFF
+
+        Y_L = DIRECTION_AVG + np.random.uniform(0,1,size=(X.shape[0],size))*(BEST-DIRECTION_AVG)
+
+        iters = np.arange(X.shape[1]//2)
+        Z_CAUCHY = X_N[:,iters % 3 == 0]+ X_N[:,iters % 3 == 0]*np.random.standard_cauchy(size=(np.sum(iters % 3 == 0)))
+        MUT[:,iters % 3 == 0] = Z_CAUCHY
+
+        NORM_MUT_DEV = ((BEST-X_N[:,iters % 3 == 1])/12)**2 + 1e-9
+        Z_NORM = np.random.normal(BEST,NORM_MUT_DEV,size=(np.sum(iters % 3 == 1)))
+        MUT[:,iters % 3 == 1] = Z_NORM
+
+        lmbda = 1
+        LEVY_DEV = (gamma(1+lmbda)*np.sin(np.pi*lmbda/2)/(gamma((1+lmbda)/2)*lmbda*2**((lmbda-1)/2)))**(1/lmbda)
+        LEVY_U = np.random.normal(0,LEVY_DEV,size=(np.sum(iters % 3 == 0)))
+        LEVY_V = np.random.normal(0,1,size=(np.sum(iters % 3 == 0)))
+        Z_LEVY = X_N[:,iters % 3 == 0]+ 0.01*LEVY_U/(LEVY_V**(1/lmbda))
+        MUT[:,iters % 3 == 0] = Z_LEVY
+
+
+        X = np.hstack([X_N,Y_N,Y_M,Y_K,Y_L,MUT])
+
+        #drop duplicates (substitution and substitute with random)
+
+        NUM = X.shape[1]
+
+        X = np.unique(X, axis=1)
+
+        if NUM-X.shape[1]>0:
+            sample_size = NUM-X.shape[1]
+            RAND = [np.random.uniform(-0.1,0.1,size=(1,sample_size)) for _ in range(X.shape[0])]
+            RAND = np.vstack(RAND)
+            X = np.hstack([X,RAND])
+
+        print(X.shape)
+
+        return X
 ```
 
 ### Parameter Transforms <a name="transform"></a>
