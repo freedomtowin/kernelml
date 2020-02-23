@@ -326,7 +326,7 @@ The default random sampling functions for the prior and posterior distributions 
 
             return np.vstack([np.random.uniform(mu-np.sqrt(sigma*12)/4,mu+np.sqrt(sigma*12)/4,(random_samples)) for sigma,mu in zip(variances,means)])
         
-        
+    from math import gamma
     #http://downloads.hindawi.com/journals/cin/2019/4243853.pdf
     def sampler_direction_based_stochastic_search(kmldata):
 
