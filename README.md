@@ -420,6 +420,39 @@ def default_parameter_transform(w,*args):
 
 ## Extensions <a name="ext"></a>
 
+### Hierarchical Density Factorization
+
+```python
+hdf = HierarchicalDensityFactorization(num_clusters=16,
+                                                                 bins_per_dimension=61,
+                                                                 smoothing_parameter=1.,
+                                                                 min_leaf_samples=50,
+                                                                 alpha=0.5)
+```
+
+* **number_of_clusters:** The number of clusters     
+* **bins_per_dimension:** The number of histogram bins across each dimensions. This is used for estimating the kernel density function  
+* **smoothing_parameter:** Increases the bandwidth of the kernel density estimation 
+* **min_leaf_samples:** Prunes clusters than have less than the minimum number of samples
+* **alpha:** Discount factor, 0<alpha<1
+
+```python
+hdf.optimize(X,maxiter=12,realizations=10,number_of_random_simulations=100,verbose=True)
+```
+
+* **X:** Input data -> (rows, columns)
+* **maxiter:** maximum number of iterations
+* **number_of_realizations:** number of runs                                    
+* **number_of_random_simulations:** The number of random simulations per cycle  
+
+```python
+assignments = hdf.assign(X)
+```
+Returns an assignment matrix (observations, clusters) that represents whether a data point is within a hypercube cluster.
+
+* **X:** Input data -> (rows, columns)
+
+
 ### Density Factorization <a name="hdr"></a>
 
 ```python
