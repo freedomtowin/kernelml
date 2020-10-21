@@ -1,0 +1,10 @@
+# Include the README
+include kernelml/hdre/region_estimator.py
+include kernelml/hdre/hdr_helpers_bycython/hdr_helpers.c
+include kernelml/kernelml_bycython/kernelml.c
+include *.md
+
+
+# Include the license file
+include LICENSE.txt
+
