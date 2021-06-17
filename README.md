@@ -42,6 +42,9 @@ The following script have not been updated for KernelML 3.1+:
 pip install kernelml --upgrade
 ```
 
+## The Algorithm ##
+
+![](https://user-images.githubusercontent.com/21232362/122313182-bf75d280-cee3-11eb-8dc6-16158181cec2.PNG)
 
 ## Examples <a name="examples"></a>
 
