@@ -29,6 +29,7 @@ The following script have not been updated for KernelML 3.1+:
     1. [KmlData](#kmldata)
     2. [Passing Static Data](#staticdata)
     2. [Parallel Processing with Numba](#parallelnumba)
+	2. [Parallel Processing with Ray](#parallelray)
     2. [Convergence](#convergence)
     3. [Override Random Sampling Functions](#simulationdefaults)
     4. [Parameter Transforms](#transforms)
@@ -274,6 +275,41 @@ def map_losses(X,y,w_list,alpha):
         loss = least_sq_loss_function(X,y,w_list[:,i:i+1])
         out[i] = loss
     return out
+```
+
+### Parallel Processing with Ray <a name="parallelray"></a>
+
+```python
+@ray.remote
+def map_losses(X,y,w_list,w_indx,args):
+    N = w_indx.shape[0]
+    resX = np.zeros(N)
+    iter_ = 0
+    for i in w_indx:
+        loss = spiking_function(X,y,w_list[:,i:i+1],args)
+        resX[iter_] = loss
+        iter_+=1
+    return resX
+    
+
+def ray_parallel_mapper(X,y,w_list,args):
+    
+    num_cores = 4
+    
+    weights_index = np.arange(0,w_list.shape[1])
+    weights_index_split = np.array_split(weights_index,num_cores)
+    
+    w_list_id = ray.put(w_list)
+    
+    result_ids = [map_losses.remote(X_id,y_id,w_list_id,weights_index_split[i],args_id) for i in range(4)]
+    result = ray.get(result_ids)
+    
+    loss = []
+    indx = []
+    for l in result:
+        loss.extend(l)
+    loss = np.hstack(loss)
+    return loss
 ```
 
 ### Convergence <a name="convergence"></a>
