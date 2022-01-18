@@ -181,8 +181,8 @@ kml.optimize(   X,
 * **X:** input matrix
 * **y:** output vector
 * **loss_function:** f(x,y,w), outputs loss
-* **num_param:** number of parameters in the loss function
-* **arg:** list of extra data to be passed to the loss function
+* **number_of_parameters:** number of parameters in the loss function
+* **args:** list of extra data to be passed to the loss function
 
 ### Iteration Parameters
 * **number_of_realizations:** number of runs
