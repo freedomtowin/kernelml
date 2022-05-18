@@ -12,7 +12,7 @@ KernelML is brute force optimizer that can be used to train machine learning mod
 
 The field of high performance computing is always change, and parallelization is very important for simulation based optimizers. This is why parallelization is left to the developer to implement. KernelML supports Numba compiled functions for parallelization across CPUs and GPU acceleration. 
 
-Due to the recent changes to threading and MKL in Anaconda distributions additional steps it has become difficult to incoporate the original parallelization engine, ipyparallel. However, it is still possible to use ipyparallel with KernelML with nomkl libraries. [kernelml_ipyparalell_example.py](Please see https://github.com/freedomtowin/kernelml/blob/master/kernelml_ipyparalell_example.py).
+Due to the recent changes to threading and MKL in Anaconda distributions additional steps it has become difficult to incoporate the original parallelization engine, ipyparallel. However, it is still possible to use ipyparallel with KernelML with nomkl libraries. [kernelml_ipyparalell_example.py](Please see https://github.com/freedomtowin/kernelml/blob/master/examples/kernelml_ipyparalell_example.py).
 
 The following script have not been updated for KernelML 3.1+:
 1. kernelml-autoencoder-example.ipynb
