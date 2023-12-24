@@ -1,3 +1,5 @@
+# Rebranded to Chocloton: https://github.com/freedomtowin/chocloton
+
 # Kernel Machine Learning 
 
 Project Status: Beta
